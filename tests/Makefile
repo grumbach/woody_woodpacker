@@ -6,19 +6,19 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2019/02/02 09:58:20 by agrumbac         ###   ########.fr        #
+#    Updated: 2018/11/25 18:42:54 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ############################## BIN #############################################
 
-NAME = woody_woodpacker
+NAME = xtea_test
 
-SRC = woody_woodpacker.c safe.c errors.c xtea.s
-
-CC = clang
+SRC = xtea_test.c xtea.c xtea_s.s
 
 AS = nasm
+
+CC = clang
 
 SRCDIR = srcs
 
@@ -29,9 +29,9 @@ OBJ = $(OBJC:.s=.o)
 
 DEP = $(addprefix ${OBJDIR}/, $(SRC:.c=.d))
 
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address,undefined -g -MMD
-
 ASFLAGS = -f elf64 -g
+
+CFLAGS = -fsanitize=address,undefined -g -MMD
 
 LDFLAGS = -Iincludes/
 
@@ -43,13 +43,13 @@ BG = "\033[32;1m"
 BB = "\033[34;1m"
 BM = "\033[35;1m"
 BC = "\033[36;1m"
-BW = "\033[37;1m"
 Y = "\033[33m"
 R = "\033[31m"
 G = "\033[32m"
 B = "\033[34m"
 M = "\033[35m"
 C = "\033[36m"
+WT = "\033[37;1m"
 W = "\033[0m""\033[32;1m"
 WR = "\033[0m""\033[31;5m"
 WY = "\033[0m""\033[33;5m"
@@ -59,14 +59,14 @@ CUT = "\033[K"
 
 ############################## RULES ###########################################
 
-all: art ${NAME}
+all: ${NAME}
 
 ${NAME}: ${OBJ}
 	@echo ${B}Compiling [${NAME}]...${X}
 	@${CC} ${CFLAGS} ${LDFLAGS} ${LIB} -o $@ ${OBJ}
 	@echo ${G}Success"   "[${NAME}]${X}
 
-${OBJDIR}/%.o: ${SRCDIR}/%.s
+${OBJDIR}/%.o: ${SRCDIR}/%.s	
 	@echo ${Y}Compiling [$@]...${X}
 	@/bin/mkdir -p ${OBJDIR}
 	@${AS} ${ASFLAGS} -o $@ $<
@@ -89,7 +89,7 @@ fclean: clean
 	@/bin/rm -f ${NAME}
 	@/bin/rm -Rf ${NAME}.dSYM
 
-test:
+test: 
 	@${CC} -g ${LDFLAGS} -fsanitize=address,undefined ${LIB} \
 	-I. -o ${NAME} $(addprefix srcs/, ${SRC})
 
@@ -98,22 +98,8 @@ re: fclean all
 ############################## DECORATION ######################################
 
 art:
-	@echo ${BB}
-	@echo "       '-------------------.. "
-	@echo "         '\\_________         \`-.-----. "
-	@echo "             '\\_______          \`\\    \`.                   "${BG}"  __   ____ "${BB}
-	@echo "                  \\____           \`\\   :                    "${BG}"/_ | | .-.\\ "${BB}
-	@echo "    '._____         (____           \`\\.\`.             .--._ "${BG}"  \\\\' / "${BB}
-	@echo "     \\____  \"'..____.(_______          \`~-.________.-'  "${WR}"@"${X}${BB}". \\___"${BG}"\\.'"${BB}"___ "
-	@echo "     )___     ___                                         /___________\\ "
-	@echo "      )___..''   '--.                    _.----------.____\`----"${BG}")'("${BB}"---' "
-	@echo "                   _:-'   ,          _.-'                "${BG}"     /( \\\\ "${BB}
-	@echo "               .-~~ __..-'~~~~~~~~~~'                    "${BG}"   .'    '\\ "${BB}
-	@echo "               \\ \\~~ \\ \\          "${BG}"             _     "${BG}"      / '    ) \\ "${BB}
-	@echo "                \\ \\   \\ \\_.-'  "${BG}"_ _ _ ___ ___ _| |_ _ "${BG}"     |      )   ' "${BB}
-	@echo "                 \\ \\_ _;-,,'  "${BG}"| | | | . | . | . | | |  "${BG}"   ( (      ) ) "${BB}
-	@echo "                 ;-,,'        "${BG}"|_____|___|___|___|_  |    "${BG}"  \"--------\" "${BB}
-	@echo "                            "${BG}"                    |___|"
+	@echo ${WY}
+	@echo "__INSERT_ASCII_ART__"
 	@echo ${X}
 
 .PHONY: all clean fclean re art
