@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/02 09:58:01 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/06 07:33:12 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,15 @@ void	decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
 void			*safe(const Elf64_Off offset, const size_t size);
 bool			read_file(const char *filename);
 bool			free_file(void);
+
+/*
+** endian management
+*/
+
+void			endian_big_mode(bool is_big_endian);
+uint16_t		endian_2(uint16_t n);
+uint32_t		endian_4(uint32_t n);
+uint64_t		endian_8(uint64_t n);
 
 /*
 ** errors

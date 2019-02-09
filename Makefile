@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2019/02/02 09:58:20 by agrumbac         ###   ########.fr        #
+#    Updated: 2019/02/09 08:36:34 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME = woody_woodpacker
 
-SRC = woody_woodpacker.c safe.c errors.c xtea.s
+SRC = woody_woodpacker.c safe.c endian.c errors.c xtea.s
 
 CC = clang
 
