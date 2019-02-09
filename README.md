@@ -7,6 +7,8 @@ This project is about coding a simple packer for Elf64 executables
 #### From `/usr/include/linux/elf.h`
 ![](literature/elf_layout.png)
 
+> Although the figure shows the program header table immediately after the ELF header, and the section header table following the sections, actual files may differ. Moreover, sections and segments have no specified order. Only the ELF header has a fixed position in the file.
+
 ## Elf Data Types
 
 ```c
@@ -51,6 +53,7 @@ typedef struct     elf64_hdr
 |`e_ident[EI_OSABI]`   | `ELFOSABI_LINUX`                 | Linux             |
 |`e_ident[EI_DATA]`    | `ELFDATA2LSB` or `ELFDATA2MSB`   | endian little/big |
 |`e_type`              | `ET_EXEC`                        | executable file   |
+|`e_entry`             | Not `0`                          | has an entry point|
 
 ## Elf64 Section Header
 
