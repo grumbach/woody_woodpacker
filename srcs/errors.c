@@ -6,14 +6,11 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/18 19:29:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/02 09:58:38 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/10 15:59:25 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
-
-# define WOODY_FATAL				"\033[31m[FATAL ERROR] \033[0m"
-# define WOODY_WARN				"\033[33m[WARNING] \033[0m"
 
 __noreturn
 void			fatal(const char * const message)

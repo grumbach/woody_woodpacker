@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/06 07:33:12 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/10 18:32:21 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <stdbool.h>
 # include <stdint.h>
+# include <string.h>
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/stat.h>
@@ -26,22 +27,31 @@
 # define __unused				__attribute__((unused))
 # define __noreturn				__attribute__((noreturn))
 # define __warn_unused_result	__attribute__((warn_unused_result))
-
+# define __nonull				__attribute__((nonnull))
 
 /*
-** XTEA encryption
+** check file
 */
 
-void	encipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
-void	decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4]);
+bool				check_eligibility(const Elf64_Ehdr *elf64_hdr);
+const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr);
+/*
+** encryption
+*/
+
+void			encrypt(char *data, size_t size, \
+						uint num_rounds, uint32_t const key[4]);
+void			decrypt(char *data, size_t size, \
+						uint num_rounds, uint32_t const key[4]);
 
 /*
 ** safe file accessing
 */
 
+__warn_unused_result
 void			*safe(const Elf64_Off offset, const size_t size);
-bool			read_file(const char *filename);
-bool			free_file(void);
+void			read_file(const char *filename);
+void			free_file(void);
 
 /*
 ** endian management
@@ -55,6 +65,9 @@ uint64_t		endian_8(uint64_t n);
 /*
 ** errors
 */
+
+# define WOODY_FATAL			"\033[31m[FATAL ERROR] \033[0m"
+# define WOODY_WARN				"\033[33m[WARNING] \033[0m"
 
 void			fatal(const char * const message);
 void			warn(const char * const message);
