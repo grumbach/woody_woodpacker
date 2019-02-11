@@ -1,10 +1,9 @@
 ; ------------------- xtea encipher -----------------
-; void    s_encipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4])
+; void    encipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4])
 section .text
-	global s_encipher
+	global encipher
 
-
-s_encipher:
+encipher:
 	push rbp
 	mov rbp, rsp
 	                           ; put everything in the right place
@@ -70,9 +69,9 @@ __loop_e:
 ; ------------------- xtea decipher -----------------
 ; void    decipher(unsigned int num_rounds, uint32_t v[2], uint32_t const key[4])
 section .text
-	global s_decipher
+	global decipher
 
-s_decipher:
+decipher:
 	push rbp
 	mov rbp, rsp
 

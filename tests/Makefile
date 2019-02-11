@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2018/11/25 18:42:54 by agrumbac         ###   ########.fr        #
+#    Updated: 2019/02/11 18:17:43 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME = xtea_test
 
-SRC = xtea_test.c xtea.c xtea_s.s
+SRC = xtea_test.c xtea_s.s cksum.c encryption_c.c encryption.s
 
 AS = nasm
 
@@ -66,7 +66,7 @@ ${NAME}: ${OBJ}
 	@${CC} ${CFLAGS} ${LDFLAGS} ${LIB} -o $@ ${OBJ}
 	@echo ${G}Success"   "[${NAME}]${X}
 
-${OBJDIR}/%.o: ${SRCDIR}/%.s	
+${OBJDIR}/%.o: ${SRCDIR}/%.s
 	@echo ${Y}Compiling [$@]...${X}
 	@/bin/mkdir -p ${OBJDIR}
 	@${AS} ${ASFLAGS} -o $@ $<
@@ -89,7 +89,7 @@ fclean: clean
 	@/bin/rm -f ${NAME}
 	@/bin/rm -Rf ${NAME}.dSYM
 
-test: 
+test:
 	@${CC} -g ${LDFLAGS} -fsanitize=address,undefined ${LIB} \
 	-I. -o ${NAME} $(addprefix srcs/, ${SRC})
 
