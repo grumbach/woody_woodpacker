@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 16:40:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/10 16:10:54 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/11 15:27:54 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void					*safe(const Elf64_Off offset, const size_t size)
 		(offset + size <= safe_pointer.filesize)));
 }
 
-void					read_file(const char *filename)
+size_t					read_file(const char *filename)
 {
 	int					fd;
 	void				*ptr;
@@ -49,6 +49,7 @@ void					read_file(const char *filename)
 
 	safe_pointer.ptr = ptr;
 	safe_pointer.filesize = buf.st_size;
+	return (safe_pointer.filesize);
 }
 
 void					free_file(void)

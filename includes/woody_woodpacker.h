@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/10 18:32:21 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/11 16:01:38 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,16 @@
 # define __warn_unused_result	__attribute__((warn_unused_result))
 # define __nonull				__attribute__((nonnull))
 
+# define OUTPUT_FILENAME		"woody"
+
 /*
 ** check file
 */
 
 bool				check_eligibility(const Elf64_Ehdr *elf64_hdr);
-const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr);
+const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
+						Elf64_Off *entry_offset_in_sect);
+
 /*
 ** encryption
 */
@@ -50,7 +54,7 @@ void			decrypt(char *data, size_t size, \
 
 __warn_unused_result
 void			*safe(const Elf64_Off offset, const size_t size);
-void			read_file(const char *filename);
+size_t			read_file(const char *filename);
 void			free_file(void);
 
 /*

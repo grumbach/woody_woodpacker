@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/10 15:42:10 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/10 20:26:09 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/11 16:16:25 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,17 @@ bool		check_eligibility(const Elf64_Ehdr *elf64_hdr)
 	return (true);
 }
 
-const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr)
+const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
+						Elf64_Off *entry_offset_in_sect)
 {
-	const Elf64_Addr    entry_addr = endian_8(elf64_hdr->e_entry);
+	const Elf64_Addr	entry_addr = endian_8(elf64_hdr->e_entry);
+	const Elf64_Off		shoff = endian_8(elf64_hdr->e_shoff);
 	const Elf64_Half	shentsize = endian_2(elf64_hdr->e_shentsize);
 	Elf64_Half			shnum = endian_2(elf64_hdr->e_shnum);
 	char				(*sections)[shnum][shentsize] = NULL;
 
 	if (shentsize < sizeof(Elf64_Shdr)
-	|| (!(sections = safe(elf64_hdr->e_shoff, shentsize * shnum))))
+	|| (!(sections = safe(shoff, shentsize * shnum))))
 	{
 		dprintf(2, WOODY_WARN "invalid sections table\n");
 		return (NULL);
@@ -46,21 +48,9 @@ const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr)
 		const Elf64_Addr section_addr = endian_8(elf64_section_hdr->sh_addr);
 		const Elf64_Xword section_size = endian_8(elf64_section_hdr->sh_size);
 
-		if (endian_4(elf64_section_hdr->sh_type) == SHT_PROGBITS)
-		{
-			printf("Executable sect at index %hu (%p) [", shnum, elf64_section_hdr);
-			if (endian_8(elf64_section_hdr->sh_flags) & SHF_ALLOC)
-				printf("-A");
-			if (endian_8(elf64_section_hdr->sh_flags) & SHF_EXECINSTR)
-				printf("-E");
-			if (endian_8(elf64_section_hdr->sh_flags) & SHF_WRITE)
-				printf("-W");
-			printf("]\n");
-		}
-
 		if (section_addr <= entry_addr && entry_addr < section_addr + section_size)
 		{
-			printf("Found entry!\n");
+			*entry_offset_in_sect = entry_addr - section_addr;
 			return (elf64_section_hdr);
 		}
 	}
