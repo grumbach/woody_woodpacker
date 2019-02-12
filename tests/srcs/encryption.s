@@ -6,7 +6,7 @@
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 17:32:43 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/02/11 18:20:26 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/02/11 18:13:13 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -18,7 +18,7 @@ section .text
 
 encrypt:
 	push rbp
-	mov rsp, rbp
+	mov rbp, rsp
 	                         ; rdi        rsi  rdx  rcx
 	                         ; num_rounds data key  size
 	jmp __while_size_ge_8_ec
@@ -45,7 +45,7 @@ section .text
 
 decrypt:
 	push rbp
-	mov rsp, rbp
+	mov rbp, rsp
 	                         ; rdi        rsi  rdx  rcx
 	                         ; num_rounds data key  size
 	jmp __while_size_ge_8_dc
