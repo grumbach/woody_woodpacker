@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2019/02/11 18:17:43 by agrumbac         ###   ########.fr        #
+#    Updated: 2019/02/14 15:56:56 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME = xtea_test
 
-SRC = xtea_test.c xtea_s.s cksum.c encryption_c.c encryption.s
+SRC = xtea_test.c xtea_s.s cksum.c encryption_c.c encrypt.s decrypt.s
 
 AS = nasm
 

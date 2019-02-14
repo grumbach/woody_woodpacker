@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/11 16:01:38 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/02/14 16:38:50 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,8 @@ const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
 ** encryption
 */
 
-void			encrypt(char *data, size_t size, \
-						uint num_rounds, uint32_t const key[4]);
-void			decrypt(char *data, size_t size, \
-						uint num_rounds, uint32_t const key[4]);
+void			encrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
+void			decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
 
 /*
 ** safe file accessing
