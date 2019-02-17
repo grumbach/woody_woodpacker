@@ -38,23 +38,23 @@ LDFLAGS = -Iincludes/
 
 ############################## COLORS ##########################################
 
-BY = "\033[33;1m"
-BR = "\033[31;1m"
-BG = "\033[32;1m"
-BB = "\033[34;1m"
-BM = "\033[35;1m"
-BC = "\033[36;1m"
-BW = "\033[37;1m"
-Y = "\033[33m"
-R = "\033[31m"
-G = "\033[32m"
-B = "\033[34m"
-M = "\033[35m"
-C = "\033[36m"
-W = "\033[0m""\033[32;1m"
-WR = "\033[0m""\033[31;5m"
-WY = "\033[0m""\033[33;5m"
-X = "\033[0m"
+BY = $(shell tput bold; tput setaf 3)
+BR = $(shell tput bold; tput setaf 1)
+BG = $(shell tput bold; tput setaf 2)
+BB = $(shell tput bold; tput setaf 4)
+BM = $(shell tput bold; tput setaf 5)
+BC = $(shell tput bold; tput setaf 6)
+BW = $(shell tput bold; tput setaf 7)
+Y = $(shell tput setaf 3)
+R = $(shell tput setaf 1)
+G = $(shell tput setaf 2)
+B = $(shell tput setaf 4)
+M = $(shell tput setaf 5)
+C = $(shell tput setaf 6)
+W = $(shell tput sgr0; tput bold; tput setaf 2)
+WR = $(tput tput sgr0; tput blink; tput setaf 1)
+WY = $(tput tput sgr0; tput blink; tput setaf 3)
+X = $(tput tput sgr0)
 UP = "\033[A"
 CUT = "\033[K"
 
