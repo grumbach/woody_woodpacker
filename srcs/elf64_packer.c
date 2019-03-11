@@ -1,32 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_file.c                                       :+:      :+:    :+:   */
+/*   elf64_packer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/10 15:42:10 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/11 16:16:25 by agrumbac         ###   ########.fr       */
+/*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
+/*   Updated: 2019/03/13 01:40:05 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
 
-bool		check_eligibility(const Elf64_Ehdr *elf64_hdr)
-{
-	if (elf64_hdr == NULL                                // no header at all!
-	|| memcmp(elf64_hdr->e_ident, ELFMAG, SELFMAG) != 0  // wrong Magic
-	|| elf64_hdr->e_ident[EI_CLASS] != ELFCLASS64        // not 64bit
-	|| elf64_hdr->e_type != ET_EXEC                      // not executable file
-	|| elf64_hdr->e_entry == 0)                          // no entry point
-	{
-		dprintf(2, WOODY_WARN "invalid file format\n");
-		return (false);
-	}
-	return (true);
-}
-
-const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
+static const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
 						Elf64_Off *entry_offset_in_sect)
 {
 	const Elf64_Addr	entry_addr = endian_8(elf64_hdr->e_entry);
@@ -38,7 +24,7 @@ const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
 	if (shentsize < sizeof(Elf64_Shdr)
 	|| (!(sections = safe(shoff, shentsize * shnum))))
 	{
-		dprintf(2, WOODY_WARN "invalid sections table\n");
+		dprintf(2, "invalid sections table\n");
 		return (NULL);
 	}
 
@@ -55,4 +41,33 @@ const Elf64_Shdr	*get_entry_section(const __nonull Elf64_Ehdr *elf64_hdr, \
 		}
 	}
 	return (NULL);
+}
+
+void	say_hello(void);
+void	end_hello(void);
+
+bool	elf64_packer(__nonull void *clone, size_t original_filesize)
+{
+	Elf64_Ehdr		*elf64_hdr = safe(0, sizeof(Elf64_Ehdr));
+	void			*original = safe(0, original_filesize);
+
+	if (original == NULL)
+	{
+		dprintf(2, "invalid original filesize");
+		return (false);
+	}
+	memcpy(clone, original, original_filesize);
+
+	// change clone's entry
+	Elf64_Off			entry_offset_in_sect;
+	const Elf64_Shdr	*entry_section = get_entry_section(elf64_hdr, &entry_offset_in_sect);
+	if (entry_section == NULL)
+	{
+		dprintf(2, "entry point is not in a section");
+		return (false);
+	}
+	const Elf64_Off		code_entry = endian_8(entry_section->sh_offset) + entry_offset_in_sect;
+	memcpy(clone + code_entry, say_hello, end_hello - say_hello);
+
+	return (true);
 }

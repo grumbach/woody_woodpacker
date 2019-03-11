@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   compiler_utils.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/01/18 19:29:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/11 16:31:15 by agrumbac         ###   ########.fr       */
+/*   Created: 2019/03/11 17:20:06 by agrumbac          #+#    #+#             */
+/*   Updated: 2019/03/11 17:20:20 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "woody_woodpacker.h"
+#ifndef COMPILER_UTILS_H
+# define COMPILER_UTILS_H
 
-# define WOODY_FATAL			"\033[31m[FATAL ERROR] \033[0m"
-# define WOODY_WARN				"\033[33m[WARNING] \033[0m"
+# define __unused				__attribute__((unused))
+# define __noreturn				__attribute__((noreturn))
+# define __warn_unused_result	__attribute__((warn_unused_result))
+# define __nonull				__attribute__((nonnull))
 
-__noreturn
-void			fatal(const char * const message)
-{
-	dprintf(2, WOODY_FATAL);
-	perror(message);
-
-	exit(EXIT_FAILURE);
-}
-
-void			warn(const char * const message)
-{
-	dprintf(2, WOODY_WARN);
-	perror(message);
-}
+#endif

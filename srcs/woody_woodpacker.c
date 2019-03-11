@@ -6,70 +6,102 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:04:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/11 16:23:42 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/13 04:08:29 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
 
-void	say_hello(void);
-void	end_hello(void);
-
-int		main(int ac, char **av)
+static const t_format	implemented_formats[FMT_SIZE] =
 {
-	Elf64_Ehdr		*elf64_hdr;
-	size_t			filesize;
+	[FMT_ELF64] = {elf64_identifier, elf64_packer}
+	// [FMT_ELF32] = {elf32_identifier, elf32_packer},
+	// [FMT_MACHO64] = {macho64_identifier, macho64_packer},
+	// [FMT_MACHO32] = {macho32_identifier, macho32_packer},
+	// [FMT_PE64] = {pe64_identifier, pe64_packer},
+	// [FMT_PE32] = {pe32_identifier, pe32_packer},
+};
+
+/*
+**
+*/
+
+static inline size_t	detect_format(void)
+{
+	for (size_t i = 0; i < FMT_SIZE; i++)
+	{
+		if (implemented_formats[i].format_identifier())
+			return (i);
+	}
+	return (FMT_SIZE);
+}
+
+static inline bool		write_clone_file(__nonull void *clone, size_t clone_size)
+{
+	int					fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY, S_IRWXU);
+
+	if (fd == -1)
+	{
+		warn("failed creating file " OUTPUT_FILENAME);
+		return (false);
+	}
+	if (write(fd, clone, clone_size) == -1)
+	{
+		close(fd);
+		warn("failed writing to " OUTPUT_FILENAME);
+		return (false);
+	}
+	close(fd);
+	return (true);
+}
+
+int						main(int ac, char **av)
+{
+	void				*clone = NULL;
+	size_t				filesize;
+	size_t				format;
+	size_t				clone_size;
 
 	if (ac != 2)
 	{
-		dprintf(2, "usage: %s elf64_file\n", av[0]);
+		dprintf(2, "usage: %s <executable>\n", av[0]);
 		return (EXIT_FAILURE);
 	}
+
 	filesize = read_file(av[1]);
 
-	// check file
-	elf64_hdr = safe(0, sizeof(Elf64_Ehdr));
-	if (check_eligibility(elf64_hdr) == false)
-		goto exit_failure;
-	// set endian for the future
-	endian_big_mode(elf64_hdr->e_ident[EI_DATA] == ELFDATA2MSB);
-
-	// create new 'clone' file
-	void			*clone = malloc(filesize);
-	void			*original = safe(0, filesize);
-	if (original == NULL || clone == NULL)
-		fatal("we're doomed...");
-	memcpy(clone, original, filesize);
-
-	// change clone's entry
-	Elf64_Off			entry_offset_in_sect;
-	const Elf64_Shdr	*entry_section = get_entry_section(elf64_hdr, &entry_offset_in_sect);
-	if (entry_section == NULL)
+	format = detect_format();
+	if (format == FMT_SIZE)
 	{
-		dprintf(2, "entry point is not in a section");
+		dprintf(2, "%s: %s is not a valid input file\n", av[0], av[1]);
 		goto exit_failure;
 	}
-	const Elf64_Off		code_entry = endian_8(entry_section->sh_offset) + entry_offset_in_sect;
-	memcpy(clone + code_entry, say_hello, end_hello - say_hello);
 
-	// write clone to new file
-	int fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY, S_IRWXU);
-	if (fd == -1)
-		fatal("failed creating file " OUTPUT_FILENAME);
-	if (write(fd, clone, filesize) == -1)
-		fatal("failed writing to " OUTPUT_FILENAME);
+	clone_size = filesize + 4096; // TODO payload size
+	clone = malloc(clone_size);
+	if (clone == NULL)
+	{
+		warn("while allocating clone");
+		goto exit_failure;
+	}
 
-	// entry_section = encrypt_entry(entry_section);
-	// packer
-	// new_file = pack_in_new_bin(unpacker_code, entry_section);
-	// write_to_file(new_file);
+	if (implemented_formats[format].packer(clone, filesize) == false)
+	{
+		dprintf(2, "%s: file corruption detected in %s, aborting.\n", av[0], av[1]);
+		goto exit_failure;
+	}
 
-	close(fd);
+	if (write_clone_file(clone, clone_size) == false)
+		goto exit_failure;
+
+	printf("\e[32mSuccessfully packed\e[33m %s \e[32min \e[33m" OUTPUT_FILENAME "\e[32m!\e[0m\n", av[1]);
+
 	free(clone);
 	free_file();
 	return (EXIT_SUCCESS);
 
 exit_failure:
+	free(clone);
 	free_file();
 	return (EXIT_FAILURE);
 }
