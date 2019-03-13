@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:04:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/13 04:08:29 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/13 05:33:13 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ static inline bool		write_clone_file(__nonull void *clone, size_t clone_size)
 
 	if (fd == -1)
 	{
-		warn("failed creating file " OUTPUT_FILENAME);
+		errors(ERR_SYS, "failed creating file " OUTPUT_FILENAME);
 		return (false);
 	}
 	if (write(fd, clone, clone_size) == -1)
 	{
 		close(fd);
-		warn("failed writing to " OUTPUT_FILENAME);
+		errors(ERR_SYS, "failed writing to " OUTPUT_FILENAME);
 		return (false);
 	}
 	close(fd);
@@ -63,12 +63,11 @@ int						main(int ac, char **av)
 	size_t				clone_size;
 
 	if (ac != 2)
-	{
-		dprintf(2, "usage: %s <executable>\n", av[0]);
-		return (EXIT_FAILURE);
-	}
+		return (dprintf(2, "usage: %s <executable>\n", av[0]), EXIT_FAILURE);
 
 	filesize = read_file(av[1]);
+	if (filesize == 0)
+		return (EXIT_FAILURE);
 
 	format = detect_format();
 	if (format == FMT_SIZE)
@@ -81,7 +80,7 @@ int						main(int ac, char **av)
 	clone = malloc(clone_size);
 	if (clone == NULL)
 	{
-		warn("while allocating clone");
+		errors(ERR_SYS, "while allocating clone");
 		goto exit_failure;
 	}
 

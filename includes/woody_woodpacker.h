@@ -6,12 +6,16 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/11 18:02:05 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/13 05:29:43 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WOODY_WOODPACKER_H
 # define WOODY_WOODPACKER_H
+
+/*
+** ------------------------------- Includes ------------------------------------
+*/
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -27,7 +31,21 @@
 # include "compiler_utils.h"
 # include "elf64.h"
 
-# define OUTPUT_FILENAME		"woody"
+/*
+** ------------------------------- Constants -----------------------------------
+*/
+
+# define ERR_SYS			0   // syscall failure
+# define ERR_THROW			1   // throw error form above function
+# define ERR_USAGE			2   // bad usage
+# define ERR_CORRUPT		3   // corrupt file
+# define ERR_NUMBER			4   // number of ERRs above
+
+# define OUTPUT_FILENAME	"woody"
+
+/*
+** ------------------------------- Typedefs ------------------------------------
+*/
 
 /*
 ** managed formats
@@ -61,6 +79,10 @@ typedef struct			s_format
 }						t_format;
 
 /*
+** ------------------------------- Text Symbols --------------------------------
+*/
+
+/*
 ** encryption
 */
 
@@ -89,7 +111,6 @@ uint64_t		endian_8(uint64_t n);
 ** errors
 */
 
-void			fatal(const char * const message);
-void			warn(const char * const message);
+bool			errors(const int err, const char *str);
 
 #endif

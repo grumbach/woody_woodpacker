@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 16:40:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/02/11 15:27:54 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/13 05:28:31 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,15 @@ size_t					read_file(const char *filename)
 	struct stat			buf;
 
 	if ((fd = open(filename, O_RDONLY)) < 0)
-		fatal("open failed");
+		return (errors(ERR_SYS, "open failed"));
 	if (fstat(fd, &buf) < 0)
-		fatal("fstat failed");
+		return (errors(ERR_SYS, "fstat failed"));
 	if (buf.st_mode & S_IFDIR)
-		fatal("can't parse directories");
+		return (errors(ERR_USAGE, "can't parse directories"));
 	if ((ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-		fatal("mmap failed");
+		return (errors(ERR_SYS, "mmap failed"));
 	if (close(fd))
-		warn("close failed");
+		return (errors(ERR_SYS, "close failed"));
 
 	safe_pointer.ptr = ptr;
 	safe_pointer.filesize = buf.st_size;
@@ -55,5 +55,5 @@ size_t					read_file(const char *filename)
 void					free_file(void)
 {
 	if (munmap(safe_pointer.ptr, safe_pointer.filesize))
-		fatal("munmap failed");
+		errors(ERR_SYS, "munmap failed");
 }

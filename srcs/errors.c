@@ -6,26 +6,27 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/18 19:29:40 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/11 16:31:15 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/13 05:31:06 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
+#include <errno.h>
 
-# define WOODY_FATAL			"\033[31m[FATAL ERROR] \033[0m"
-# define WOODY_WARN				"\033[33m[WARNING] \033[0m"
-
-__noreturn
-void			fatal(const char * const message)
+bool			errors(const int err, const char *str)
 {
-	dprintf(2, WOODY_FATAL);
-	perror(message);
+	static const char	*msg[ERR_NUMBER] =
+	{
+		[ERR_SYS]		= "\033[31m[FATAL ERROR] \033[0m",
+		[ERR_THROW]		= "  -> in _",
+		[ERR_USAGE]		= "Bad usage: ",
+		[ERR_CORRUPT]	= "\033[33m[WARNING] \033[0m" "Corrupt file: ",
+	};
 
-	exit(EXIT_FAILURE);
-}
+	if (err == ERR_SYS)
+		dprintf(2, "%s%s: %s\n", msg[err], str, strerror(errno));
+	else
+		dprintf(2, "%s%s\n", msg[err], str);
 
-void			warn(const char * const message)
-{
-	dprintf(2, WOODY_WARN);
-	perror(message);
+	return (false);
 }
