@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 05:46:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/13 07:02:35 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/13 07:29:59 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static bool			get_entry_section(t_entry *entry, \
 
 		if (section_addr <= entry_addr && entry_addr < section_addr + section_size)
 		{
-			entry->sect_hdr = section_addr;
+			entry->sect_hdr = elf64_section_hdr;
 			entry->offset_in_sect = entry_addr - section_addr;
 			return (true);
 		}
@@ -65,7 +65,7 @@ static bool			get_entry_segment(t_entry *entry, \
 
 		if (seg_addr <= entry_addr && entry_addr < seg_addr + seg_size)
 		{
-			entry->seg_hdr = seg_addr;
+			entry->seg_hdr = elf64_seg_hdr;
 			entry->offset_in_seg = entry_addr - seg_addr;
 			return (true);
 		}
