@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2019/03/13 06:44:16 by agrumbac         ###   ########.fr        #
+#    Updated: 2019/03/13 16:23:16 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME = woody_woodpacker
 
 SRC = woody_woodpacker.c safe.c endian.c errors.c \
 	elf64_packer.c elf64_identifier.c elf64_find_entry.c \
-	encrypt.s decrypt.s hello.s
+	encrypt.s decrypt.s payload.s
 
 CC = clang
 

@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:01 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/11 15:52:28 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/16 17:21:23 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ bool	elf64_identifier(void)
 	if (elf64_hdr == NULL                                // no header at all!
 	|| memcmp(elf64_hdr->e_ident, ELFMAG, SELFMAG) != 0  // wrong Magic
 	|| elf64_hdr->e_ident[EI_CLASS] != ELFCLASS64        // not 64bit
-	|| elf64_hdr->e_type != ET_EXEC                      // not executable file
-	|| elf64_hdr->e_entry == 0)                          // no entry point
+	|| elf64_hdr->e_entry == 0                           // no entry point
+	|| elf64_hdr->e_phoff == 0)                          // no program hdr table
 		return (false);
 
 	// set endian for the future

@@ -1,12 +1,12 @@
 ; **************************************************************************** ;
 ;                                                                              ;
 ;                                                         :::      ::::::::    ;
-;    hello.s                                            :+:      :+:    :+:    ;
+;    payload.s                                          :+:      :+:    :+:    ;
 ;                                                     +:+ +:+         +:+      ;
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/02/11 14:53:34 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/03/13 16:23:08 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -14,10 +14,10 @@
 %define STDOUT			0x1
 
 section .text
-	global say_hello
-	global end_hello
+	global begin_payload
+	global end_payload
 
-say_hello:
+begin_payload:
 	push rbp
 	mov rbp, rsp
 
@@ -37,4 +37,4 @@ say_hello:
 
 	leave
 	ret
-end_hello:
+end_payload:
