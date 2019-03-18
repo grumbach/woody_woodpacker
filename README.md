@@ -51,8 +51,8 @@ typedef struct     elf64_hdr
 |`e_ident`             | `(char *)ELFMAG` of len `SELFMAG`| Magic             |
 |`e_ident[EI_CLASS]`   | `ELFCLASS64`                     | 64bit             |
 |`e_ident[EI_DATA]`    | `ELFDATA2LSB` or `ELFDATA2MSB`   | endian little/big |
-|`e_type`              | `ET_EXEC`                        | executable file   |
 |`e_entry`             | Not `0`                          | has an entry point|
+|`e_phoff`             | Not `0`                          | has a program header table|
 
 ## Elf64 Section Header
 
