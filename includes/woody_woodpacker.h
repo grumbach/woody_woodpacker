@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/13 05:29:43 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/19 16:50:26 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <unistd.h>
 # include <sys/stat.h>
 # include <sys/mman.h>
-# include <linux/elf.h>
 
 # include "compiler_utils.h"
 # include "elf64.h"
@@ -93,8 +92,7 @@ void			decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
 ** safe file accessing
 */
 
-__warn_unused_result
-void			*safe(const Elf64_Off offset, const size_t size);
+void			*safe(const size_t offset, const size_t size);
 size_t			read_file(const char *filename);
 void			free_file(void);
 

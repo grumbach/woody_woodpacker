@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 16:40:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/13 05:28:31 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/03/19 16:47:50 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ static struct	s_safe_pointer
 ** returns NULL if requested memory is out of range
 */
 
-void					*safe(const Elf64_Off offset, const size_t size)
+__warn_unused_result
+void					*safe(const size_t offset, const size_t size)
 {
 	return ((void *) ((size_t)(safe_pointer.ptr + offset) * \
 		(offset + size <= safe_pointer.filesize)));
