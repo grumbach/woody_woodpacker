@@ -6,7 +6,7 @@
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/03/18 15:39:05 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/03/19 14:31:27 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -23,71 +23,69 @@ section .text
 begin_payload:
 ;------------------------------; Store variables
 	call mark_below
-	db "128 bit key here", "text len"
+	db "128 bit key here", "text len", "entry..."
 ;------------------------------; Get variables address
-	; | 0    | 16       |           |
-	; | rdx  | r9       | r10       |
-	; | key  | text len | text addr |
+	; | 0    | *16      | *24        |           |
+	; | rdx  | r9       | r8         | r10       |
+	; | key  | text len | entry addr | text addr |
 mark_below:
 	pop rdx
 	mov r9, rdx
 	add r9, 16
 	mov r9, [r9]
-	push rdx
-	push r9
+	mov r10, rdx
+	sub r10, r9
+	mov r8, rdx
+	add r8, 24
+	mov r8, [r8]
+	add r8, rdx
+
+	push r8                    ; save entry addr
+	push r10                   ; save text addr
+	push rdx                   ; save key
+	push r9                    ; save text len
 ;------------------------------; Show-off
-	; write(1, "....WOODY....\n", 14);
 	mov rax, 0x00000a2e2e2e2e59
 	push rax
 	mov rax, 0x444f4f572e2e2e2e
 	push rax
 
+	; write(1, "....WOODY....\n", 14);
 	mov rdi, STDOUT
 	mov rsi, rsp
 	mov rdx, 14
-
 	mov rax, SYSCALL_WRITE
 	syscall
+
 	add rsp, 16
 ;------------------------------; make text writable
-	;mprotect(text_addr, text_len, PROT_READ | PROT_WRITE | PROT_EXEC);
-	pop r9
-	pop rdx
-	push rdx
-	push r9
-	mov r10, rdx
-	sub r10, r9
+	mov rdx, [rsp + 8]         ; get key
+	mov r9, [rsp]              ; get text len
+	mov r10, [rsp + 16]        ; get text addr
+
 	and r10, PAGE_SIZE_ALIGN   ; align pagesize
 
+	;mprotect(text_addr, text_len, PROT_READ | PROT_WRITE | PROT_EXEC);
 	mov rdi, r10
 	mov rsi, r9
 	mov rdx, PROT_RWX
-
 	mov rax, SYSCALL_MPROTECT
 	syscall
 
 ;------------------------------; decrypt text
-	;decrypt(32, text, key, text_len);
-	pop r9
-	pop rdx
-	push rdx
-	push r9
-	mov r10, rdx
-	sub r10, r9
+	mov rdx, [rsp + 8]         ; get key
+	mov r9, [rsp]              ; get text len
+	mov r10, [rsp + 16]        ; get text addr
 
+	;decrypt(32, text, key, text_len);
 	mov rdi, 32
 	mov rsi, r10
 	mov rdx, rdx
 	mov rcx, r9
-
 	call decrypt
 ;------------------------------; return to text
-	pop r9
-	pop rdx
-	mov r10, rdx
-	; sub r10, r9;TODO uncomment
-
-	jmp r10
+	mov r8, [rsp + 24]         ; get entry
+	jmp r8
 
 ;void
 ;	decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size)
