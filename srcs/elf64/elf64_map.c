@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 16:52:12 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/19 18:13:16 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/04/19 17:21:35 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ static bool		get_segment_table(t_sector **segment, Elf64_Ehdr *elf64_hdr)
 
 bool			elf64_map(t_elf_map *map)
 {
-	goto exit_failure;
-
 	map->elf64_hdr = safe(0, sizeof(Elf64_Ehdr));
 	if (map->elf64_hdr == NULL)
 		return (errors(ERR_CORRUPT, "elf64 header missing"));

@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/19 18:08:24 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/04/19 17:14:28 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,41 +26,39 @@
 **   - section table
 */
 
-extern exit_failure;
-
-typedef struct			s_entry
+typedef struct		s_entry
 {
-	void				*sector;
-	size_t				offset;
-}						t_entry;
+	void		*sector;
+	size_t		offset;
+}			t_entry;
 
-typedef struct			s_sector
+typedef struct		s_sector
 {
-	void				*table;
-	size_t				size;
-	size_t				num;
-	t_entry				entry;
-}						t_sector;
+	void		*table;
+	size_t		size;
+	size_t		num;
+	t_entry		entry;
+}			t_sector;
 
-typedef struct			s_elf_map
+typedef struct		s_elf_map
 {
-	Elf64_Ehdr			*elf64_hdr;
-	t_sector			*segm;
-	t_sector			*sect;
-}						t_elf_map;
+	Elf64_Ehdr	*elf64_hdr;
+	t_sector	*segm;
+	t_sector	*sect;
+}			t_elf_map;
 
 /*
 ** Utils
 */
 
-bool					find_entry(t_entry *entry, const __nonull Elf64_Ehdr *original_hdr);
-bool					elf64_map(t_elf_map *map);
+bool	find_entry(t_entry *entry, const __nonull Elf64_Ehdr *original_hdr);
+bool	elf64_map(t_elf_map *map);
 
 /*
 ** Vicious payload !
 */
 
-void					begin_payload(void);
-void					end_payload(void);
+void	begin_payload(void);
+void	end_payload(void);
 
 #endif

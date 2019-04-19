@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:04:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/13 05:33:13 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/04/19 17:18:58 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ static inline size_t	detect_format(void)
 	return (FMT_SIZE);
 }
 
-static inline bool		write_clone_file(__nonull void *clone, size_t clone_size)
+static inline bool	write_clone_file(__nonull void *clone, size_t clone_size)
 {
-	int					fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY, S_IRWXU);
+	int		fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY, S_IRWXU);
 
 	if (fd == -1)
 	{
@@ -55,12 +55,12 @@ static inline bool		write_clone_file(__nonull void *clone, size_t clone_size)
 	return (true);
 }
 
-int						main(int ac, char **av)
+int			main(int ac, char **av)
 {
-	void				*clone = NULL;
-	size_t				filesize;
-	size_t				format;
-	size_t				clone_size;
+	void		*clone = NULL;
+	size_t		filesize;
+	size_t		format;
+	size_t		clone_size;
 
 	if (ac != 2)
 		return (dprintf(2, "usage: %s <executable>\n", av[0]), EXIT_FAILURE);

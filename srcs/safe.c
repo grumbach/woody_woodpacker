@@ -6,17 +6,17 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 16:40:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/19 16:47:50 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/04/19 17:13:18 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
 
-static struct	s_safe_pointer
+static struct		s_safe_pointer
 {
 	void		*ptr;
 	size_t		filesize;
-}				safe_pointer = {NULL, 0};
+}			safe_pointer = {NULL, 0};
 
 /*
 ** safe()
@@ -25,17 +25,18 @@ static struct	s_safe_pointer
 */
 
 __warn_unused_result
-void					*safe(const size_t offset, const size_t size)
+void			*safe(const size_t offset, const size_t size)
 {
-	return ((void *) ((size_t)(safe_pointer.ptr + offset) * \
-		(offset + size <= safe_pointer.filesize)));
+	if (offset + size > safe_pointer.filesize || offset + size < offset)
+		return (NULL);
+	return (safe_pointer.ptr + offset);
 }
 
-size_t					read_file(const char *filename)
+size_t			read_file(const char *filename)
 {
-	int					fd;
-	void				*ptr;
-	struct stat			buf;
+	int		fd;
+	void		*ptr;
+	struct stat	buf;
 
 	if ((fd = open(filename, O_RDONLY)) < 0)
 		return (errors(ERR_SYS, "open failed"));
@@ -53,7 +54,7 @@ size_t					read_file(const char *filename)
 	return (safe_pointer.filesize);
 }
 
-void					free_file(void)
+void			free_file(void)
 {
 	if (munmap(safe_pointer.ptr, safe_pointer.filesize))
 		errors(ERR_SYS, "munmap failed");
