@@ -6,13 +6,13 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 16:40:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/04/19 17:13:18 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/10 00:31:11 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
 
-static struct		s_safe_pointer
+static struct
 {
 	void		*ptr;
 	size_t		filesize;
@@ -34,11 +34,11 @@ void			*safe(const size_t offset, const size_t size)
 
 size_t			read_file(const char *filename)
 {
-	int		fd;
 	void		*ptr;
 	struct stat	buf;
+	int		fd = open(filename, O_RDONLY);
 
-	if ((fd = open(filename, O_RDONLY)) < 0)
+	if (fd < 0)
 		return (errors(ERR_SYS, "open failed"));
 	if (fstat(fd, &buf) < 0)
 		return (errors(ERR_SYS, "fstat failed"));
@@ -54,8 +54,12 @@ size_t			read_file(const char *filename)
 	return (safe_pointer.filesize);
 }
 
-void			free_file(void)
+bool			free_file(void)
 {
-	if (munmap(safe_pointer.ptr, safe_pointer.filesize))
-		errors(ERR_SYS, "munmap failed");
+	if (safe_pointer.ptr)
+	{
+		if (munmap(safe_pointer.ptr, safe_pointer.filesize))
+			return errors(ERR_SYS, "munmap failed");
+	}
+	return (true);
 }
