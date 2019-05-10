@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 00:35:02 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/10 07:08:03 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 ** ------------------------------- Constants -----------------------------------
 */
 
-# define OUTPUT_FILENAME	"woody"
+# define OUTPUT_FILENAME	"packed_file"
 
 enum
 {
@@ -91,7 +91,7 @@ void		decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
 ** safe file accessing
 */
 
-void		*safe(const size_t offset, const size_t size);
+void		*original_safe(const size_t offset, const size_t size);
 size_t		read_file(const char *filename);
 bool		free_file(void);
 

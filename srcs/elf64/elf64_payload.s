@@ -1,19 +1,19 @@
 ; **************************************************************************** ;
 ;                                                                              ;
 ;                                                         :::      ::::::::    ;
-;    payload.s                                          :+:      :+:    :+:    ;
+;    elf64_payload.s                                    :+:      :+:    :+:    ;
 ;                                                     +:+ +:+         +:+      ;
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/03/19 14:31:27 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/05/10 05:47:35 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
 %define SYSCALL_WRITE		0x1
 %define SYSCALL_MPROTECT	0xa
-%define STDOUT				0x1
-%define PROT_RWX			0x7
+%define STDOUT			0x1
+%define PROT_RWX		0x7
 %define PAGE_SIZE_ALIGN		0xffffffffffffff00
 
 section .text
@@ -35,7 +35,8 @@ mark_below:
 	mov r9, [r9]
 	mov r10, rdx
 	sub r10, r9
-	mov r8, rdx
+	mov r8, rdx        ; TODO fix addresses here!
+	; sub r8, 32       ; remove sizeof("call mark_below")
 	add r8, 24
 	mov r8, [r8]
 	add r8, rdx
@@ -84,6 +85,7 @@ mark_below:
 	mov rcx, r9
 	call decrypt
 ;------------------------------; return to text
+	; TODO restore stack
 	mov r8, [rsp + 24]         ; get entry
 	jmp r8
 
