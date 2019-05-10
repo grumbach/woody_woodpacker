@@ -6,13 +6,13 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:01 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/16 17:21:23 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/04/19 17:16:30 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "woody_woodpacker.h"
+#include "elf64_private.h"
 
-bool	elf64_identifier(void)
+bool				elf64_identifier(void)
 {
 	const Elf64_Ehdr	*elf64_hdr = safe(0, sizeof(*elf64_hdr));
 

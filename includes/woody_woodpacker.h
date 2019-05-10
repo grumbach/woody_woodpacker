@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/03/13 05:29:43 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/10 00:35:02 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,30 @@
 # include <unistd.h>
 # include <sys/stat.h>
 # include <sys/mman.h>
-# include <linux/elf.h>
 
 # include "compiler_utils.h"
-# include "elf64.h"
+# include "errors.h"
 
 /*
 ** ------------------------------- Constants -----------------------------------
 */
 
-# define ERR_SYS			0   // syscall failure
-# define ERR_THROW			1   // throw error form above function
-# define ERR_USAGE			2   // bad usage
-# define ERR_CORRUPT		3   // corrupt file
-# define ERR_NUMBER			4   // number of ERRs above
-
 # define OUTPUT_FILENAME	"woody"
 
-/*
-** ------------------------------- Typedefs ------------------------------------
-*/
+enum
+{
+	ERR_SYS,                // syscall failure
+	ERR_THROW,              // throw error form above function
+	ERR_USAGE,              // bad usage
+	ERR_CORRUPT,            // corrupt file
+	ERR_SIZE,               // number of ERRs above
+};
 
 /*
 ** managed formats
 */
 
-typedef enum			e_file_fmt
+enum	e_format
 {
 	FMT_ELF64,
 	// FMT_ELF32,
@@ -59,8 +57,8 @@ typedef enum			e_file_fmt
 	// FMT_MACHO32,
 	// FMT_PE64,
 	// FMT_PE32,
-	FMT_SIZE                    // alway last
-}						t_file_fmt;
+	FMT_SIZE                // alway last
+};
 
 /*
 ** f_identifier
@@ -70,13 +68,13 @@ typedef enum			e_file_fmt
 */
 
 typedef bool			(*f_identifier)(void);
-typedef bool			(*f_packer)(__nonull void *clone, size_t original_filesize);
+typedef bool			(*f_packer)(void *clone, size_t original_filesize)__nonull;
 
-typedef struct			s_format
+struct				format
 {
 	f_identifier		format_identifier;
-	f_packer			packer;
-}						t_format;
+	f_packer		packer;
+};
 
 /*
 ** ------------------------------- Text Symbols --------------------------------
@@ -86,31 +84,24 @@ typedef struct			s_format
 ** encryption
 */
 
-void			encrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
-void			decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
+void		encrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
+void		decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
 
 /*
 ** safe file accessing
 */
 
-__warn_unused_result
-void			*safe(const Elf64_Off offset, const size_t size);
-size_t			read_file(const char *filename);
-void			free_file(void);
+void		*safe(const size_t offset, const size_t size);
+size_t		read_file(const char *filename);
+bool		free_file(void);
 
 /*
 ** endian management
 */
 
-void			endian_big_mode(bool is_big_endian);
-uint16_t		endian_2(uint16_t n);
-uint32_t		endian_4(uint32_t n);
-uint64_t		endian_8(uint64_t n);
-
-/*
-** errors
-*/
-
-bool			errors(const int err, const char *str);
+void		endian_big_mode(bool is_big_endian);
+uint16_t	endian_2(uint16_t n);
+uint32_t	endian_4(uint32_t n);
+uint64_t	endian_8(uint64_t n);
 
 #endif

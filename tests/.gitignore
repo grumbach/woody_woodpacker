@@ -1,8 +1,0 @@
-*.o
-*.a
-*.d
-.D*
-*.dSYM
-libft
-a.out
-xtea_test
