@@ -6,13 +6,13 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 08:11:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 08:35:08 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/10 23:51:03 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "elf64_private.h"
 
-static bool	iterate_phdr(f_safe_accessor safe, f_iter_callback callback)
+bool	iterate_phdr(f_safe_accessor safe, f_iter_callback callback)
 {
 	const Elf64_Ehdr	*elf64_hdr = safe(0, sizeof(Elf64_Ehdr));
 	if (elf64_hdr == NULL)
@@ -29,14 +29,16 @@ static bool	iterate_phdr(f_safe_accessor safe, f_iter_callback callback)
 
 	while (phnum--)
 	{
-		Elf64_Phdr *elf64_seg_hdr = (Elf64_Phdr *)(*segments)[phnum];
+		size_t	elf64_seg_hdr = (size_t)(*segments)[phnum];
+		size_t	offset        = (elf64_seg_hdr - (size_t)elf64_hdr);
 
-		// now what?
+		if (!callback(safe, offset))
+			return (errors(ERR_THROW, __func__));
 	}
 	return (true);
 }
 
-static bool	iterate_shdr(f_safe_accessor safe, f_iter_callback callback)
+bool	iterate_shdr(f_safe_accessor safe, f_iter_callback callback)
 {
 	const Elf64_Ehdr	*elf64_hdr = safe(0, sizeof(Elf64_Ehdr));
 	if (elf64_hdr == NULL)
@@ -53,9 +55,11 @@ static bool	iterate_shdr(f_safe_accessor safe, f_iter_callback callback)
 
 	while (shnum--)
 	{
-		Elf64_Shdr *elf64_section_hdr = (Elf64_Shdr *)(*sections)[shnum];
+		size_t	elf64_section_hdr = (size_t)(*sections)[shnum];
+		size_t	offset            = (elf64_section_hdr - (size_t)elf64_hdr);
 
-		// now what?
+		if (!callback(safe, offset))
+			return (errors(ERR_THROW, __func__));
 	}
 	return (true);
 }

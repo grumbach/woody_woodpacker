@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 08:35:36 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/11 00:01:43 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ struct				entry
 {
 	struct elf64_phdr	*safe_phdr;
 	struct elf64_shdr	*safe_shdr;
-	size_t			file_offset;
+	size_t			section_end_offset;
 };
 
 typedef	void	*(*f_safe_accessor)(const size_t offset, const size_t size);
@@ -52,5 +52,11 @@ bool	copy_after_end_of_text(void *clone);
 
 void	begin_payload(void);
 void	end_payload(void);
+
+/*
+** Viewer
+*/
+
+bool	elf64_viewer(f_safe_accessor safe);
 
 #endif
