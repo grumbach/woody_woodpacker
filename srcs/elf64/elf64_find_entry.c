@@ -6,7 +6,7 @@
 /*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 23:43:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/11 04:53:40 by jfortin          ###   ########.fr       */
+/*   Updated: 2019/05/11 04:58:48 by jfortin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,16 +65,11 @@ bool	find_entry(struct entry *original_entry, f_safe_accessor safe)
 		return (errors(ERR_CORRUPT, "entry is not in section or segment"));
 
 	const Elf64_Ehdr	*elf64_hdr = safe(0, sizeof(Elf64_Ehdr));
+	if (!elf64_hdr)
+		return (errors(ERR_CORRUPT, "no elf64 hdr"));
 
 	original_entry->section_end_offset = endian_8(original_entry->safe_shdr->sh_offset) + endian_8(original_entry->safe_shdr->sh_size);
 	original_entry->offset_in_section = endian_8(elf64_hdr->e_entry) - endian_8(original_entry->safe_shdr->sh_addr);
-	
-	printf("p_align: %lu\n", stored_entry->safe_phdr->p_align);
-	printf("section virtual address: %lu\n", original_entry->safe_shdr->sh_addr);
-	printf("e_entry: %lu\n", elf64_hdr->e_entry);
-
-	printf("section_end_offset: %lu\n", original_entry->section_end_offset);
-	printf("offset_in_section: %lu\n", original_entry->offset_in_section);
 	
 	return true;
 }
