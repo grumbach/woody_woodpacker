@@ -6,7 +6,7 @@
 /*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/11 03:33:07 by jfortin          ###   ########.fr       */
+/*   Updated: 2019/05/11 03:59:43 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ struct				entry
 {
 	struct elf64_phdr	*safe_phdr;
 	struct elf64_shdr	*safe_shdr;
-	size_t				section_end_offset;
-	size_t				offset_in_section;
+	size_t			section_end_offset;
+	size_t			offset_in_section;
 };
 
 typedef	void	*(*f_safe_accessor)(const size_t offset, const size_t size);
