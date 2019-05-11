@@ -6,7 +6,7 @@
 /*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 22:36:00 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/11 07:57:48 by jfortin          ###   ########.fr       */
+/*   Updated: 2019/05/11 08:05:07 by jfortin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,9 @@ bool	print_shdr(f_safe_accessor safe, size_t offset)
 
 bool	elf64_viewer(f_safe_accessor safe)
 {
-	print_ehdr(safe);
-	iterate_phdr(safe, print_phdr);
-	iterate_shdr(safe, print_shdr);
+	if (!print_ehdr(safe)
+	|| !iterate_phdr(safe, print_phdr)
+	|| !iterate_shdr(safe, print_shdr))
+		return (errors(ERR_THROW, "elf64_viewer"));
 	return true;
 }
