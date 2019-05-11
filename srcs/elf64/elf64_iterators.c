@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_iterators.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 08:11:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 23:51:03 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/11 03:13:23 by jfortin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	iterate_phdr(f_safe_accessor safe, f_iter_callback callback)
 		size_t	offset        = (elf64_seg_hdr - (size_t)elf64_hdr);
 
 		if (!callback(safe, offset))
-			return (errors(ERR_THROW, __func__));
+			return (errors(ERR_THROW, "iterate_phdr"));
 	}
 	return (true);
 }
@@ -59,7 +59,7 @@ bool	iterate_shdr(f_safe_accessor safe, f_iter_callback callback)
 		size_t	offset            = (elf64_section_hdr - (size_t)elf64_hdr);
 
 		if (!callback(safe, offset))
-			return (errors(ERR_THROW, __func__));
+			return (errors(ERR_THROW, "iterate_shdr"));
 	}
 	return (true);
 }
