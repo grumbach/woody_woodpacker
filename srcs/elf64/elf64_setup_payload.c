@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/12 01:10:16 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/12 01:22:46 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,9 @@ bool		setup_payload(void *clone, const struct entry *original_entry)
 	void	*constants_location  = payload_location + CALL_INSTR_SIZE;
 	void	*text_location       = payload_location - constants.relative_text_address;
 
-	// encrypt(32, text_location, constants.key, text_size);
-	// memcpy(payload_location, begin_payload, payload_size);
-	// memcpy(constants_location, &constants, sizeof(constants));
-
-
-	const size_t	e_offset = original_entry->safe_shdr->sh_offset + original_entry->offset_in_section;
-	void	*entry_location  = clone + e_offset;
-	memcpy(entry_location, begin_payload, payload_size);
+	encrypt(32, text_location, constants.key, text_size);
+	memcpy(payload_location, begin_payload, payload_size);
+	memcpy(constants_location, &constants, sizeof(constants));
 
 	return true;
 }
