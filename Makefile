@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2019/05/11 00:02:39 by agrumbac         ###   ########.fr        #
+#    Updated: 2019/05/11 00:11:18 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC = woody_woodpacker.c original_safe.c endian.c encrypt.s decrypt.s \
 	elf64/elf64_iterators.c \
 	elf64/elf64_viewer.c \
 	elf64/elf64_find_entry.c \
+	elf64/elf64_setup_payload.c \
 	elf64/elf64_identifier.c
 
 CC = clang
