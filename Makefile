@@ -6,7 +6,7 @@
 #    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/10 17:19:11 by agrumbac          #+#    #+#              #
-#    Updated: 2019/05/11 00:11:18 by agrumbac         ###   ########.fr        #
+#    Updated: 2019/05/12 07:29:52 by agrumbac         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 NAME = woody_woodpacker
 
-SRC = woody_woodpacker.c original_safe.c endian.c encrypt.s decrypt.s \
+SRC = woody_woodpacker.c original_safe.c clone_safe.c endian.c encrypt.s decrypt.s \
 	elf64/elf64_payload.s \
 	elf64/elf64_packer.c \
 	elf64/elf64_iterators.c \
