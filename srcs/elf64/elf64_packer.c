@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/13 17:16:19 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 17:33:58 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@ static bool	change_entry(const struct entry *original_entry)
 
 	if (!clone_hdr) return (errors(ERR_CORRUPT, "wildly unreasonable"));
 
-	const Elf64_Xword sh_size = endian_8(original_entry->safe_shdr->sh_size);
-	const Elf64_Xword payload_distance = sh_size - original_entry->offset_in_section;
+	const Elf64_Xword	sh_size = endian_8(original_entry->safe_shdr->sh_size);
+	const Elf64_Xword	payload_distance = sh_size - original_entry->offset_in_section;
+	Elf64_Addr		e_entry = endian_8(clone_hdr->e_entry);
 
-	clone_hdr->e_entry += payload_distance;
+	e_entry += payload_distance;
+	clone_hdr->e_entry = endian_8(e_entry);
 
-	return (true);
+	return true;
 }
 
 static bool	adjust_sizes(size_t shift_amount)
@@ -31,10 +33,19 @@ static bool	adjust_sizes(size_t shift_amount)
 	struct entry	clone_entry;
 
 	if (!find_entry(&clone_entry, clone_safe))
-		return (errors(ERR_THROW, "adjust_sizes"));
+		return errors(ERR_THROW, "adjust_sizes");
 
-	clone_entry.safe_shdr += shift_amount;
-	clone_entry.safe_phdr += shift_amount;
+	Elf64_Xword	p_filesz = endian_8(clone_entry.safe_phdr->p_filesz);
+	Elf64_Xword	p_memsz  = endian_8(clone_entry.safe_phdr->p_memsz);
+	Elf64_Xword	sh_size  = endian_8(clone_entry.safe_shdr->sh_size);
+
+	p_filesz += shift_amount;
+	p_memsz  += shift_amount;
+	sh_size  += shift_amount;
+
+	clone_entry.safe_phdr->p_filesz = endian_8(p_filesz);
+	clone_entry.safe_phdr->p_memsz  = endian_8(p_memsz);
+	clone_entry.safe_shdr->sh_size  = endian_8(sh_size);
 
 	return true;
 }
@@ -53,5 +64,5 @@ bool		elf64_packer(size_t original_file_size)
 	|| !change_entry(&original_entry))
 		return errors(ERR_THROW, "elf64_packer");
 
-	return (true);
+	return true;
 }
