@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_private.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/11 03:59:43 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/12 07:28:15 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,8 @@ bool	iterate_shdr(f_safe_accessor safe, f_iter_callback callback);
 */
 
 bool	find_entry(struct entry *original_entry, f_safe_accessor safe);
-bool	copy_until_end_of_text(void *clone, const struct entry *original_entry);
-bool	setup_payload(void *clone, const struct entry *original_entry);
-bool	copy_after_end_of_text(void *clone);
+bool	setup_payload(const struct entry *original_entry);
+bool	copy_after_payload(void);
 
 /*
 ** Vicious payload !
