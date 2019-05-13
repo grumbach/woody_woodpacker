@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_packer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/13 15:36:35 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 16:20:35 by jfortin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ static bool	change_entry(const struct entry *original_entry)
 	clone_hdr->e_entry += payload_distance;
 
 	return (true);
-}
-
-static bool	adjust_sizes(shift_amount)
-{
-	grow_text_section(shift_amount);
-	grow_pt_load(shift_amount);
 }
 
 bool		elf64_packer(size_t original_file_size)
