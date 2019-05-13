@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/13 17:33:58 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 20:30:53 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,13 @@ bool		elf64_packer(size_t original_file_size)
 
 	if (!find_entry(&original_entry, original_safe)
 	|| !copy_to_clone(original_entry.section_end_offset, shift_amount, original_file_size)
-	|| !adjust_references(shift_amount, original_entry.section_end_offset)
+	|| !adjust_references(shift_amount, &original_entry)
 	|| !adjust_sizes(shift_amount)
 	|| !setup_payload(&original_entry)
 	|| !change_entry(&original_entry))
 		return errors(ERR_THROW, "elf64_packer");
+
+	elf64_viewer(clone_safe);
 
 	return true;
 }

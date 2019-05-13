@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/13 15:47:42 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 20:30:47 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ bool	foreach_shdr(f_safe_accessor safe, f_iter_callback callback);
 
 bool	find_entry(struct entry *original_entry, f_safe_accessor safe);
 bool	setup_payload(const struct entry *original_entry);
-bool	adjust_references(size_t shift_amount, size_t end_of_text);
+bool	adjust_references(size_t shift_amount, const struct entry *original_entry);
 bool	copy_to_clone(size_t end_of_text, size_t shift_amount, \
 		size_t original_file_size);
 

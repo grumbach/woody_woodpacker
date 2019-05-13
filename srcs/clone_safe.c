@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/12 03:15:48 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/12 07:30:30 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 20:30:43 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void		free_clone(void)
 __nonull
 bool		write_clone_file(void)
 {
-	int	fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY, S_IRWXU);
+	int	fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
 
 	if (fd == -1)
 		return errors(ERR_SYS, "failed creating file " OUTPUT_FILENAME);
