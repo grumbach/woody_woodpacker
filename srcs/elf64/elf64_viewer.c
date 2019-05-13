@@ -111,8 +111,8 @@ bool	print_shdr(f_safe_accessor safe, size_t offset)
 bool	elf64_viewer(f_safe_accessor safe)
 {
 	if (!print_ehdr(safe)
-	|| !iterate_phdr(safe, print_phdr)
-	|| !iterate_shdr(safe, print_shdr))
+	|| !foreach_phdr(safe, print_phdr)
+	|| !foreach_shdr(safe, print_shdr))
 		return (errors(ERR_THROW, "elf64_viewer"));
 	return true;
 }

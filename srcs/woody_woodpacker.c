@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:04:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/12 07:27:13 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 15:15:22 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int			main(int ac, char **av)
 	if (!alloc_clone(filesize))
 		goto exit_failure;
 
-	if (!implemented_formats[format].packer())
+	if (!implemented_formats[format].packer(filesize))
 	{
 		errors(ERR_CORRUPT, "%s: file corruption detected in %s, aborting.\n", av[0], av[1]);
 		goto exit_failure;

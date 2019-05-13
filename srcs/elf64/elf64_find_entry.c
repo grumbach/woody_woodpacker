@@ -53,9 +53,9 @@ bool		find_entry(struct entry *original_entry, f_safe_accessor safe)
 	bzero(original_entry, sizeof(*original_entry));
 	stored_entry = original_entry;
 
-	if (!iterate_phdr(safe, find_entry_phdr))
+	if (!foreach_phdr(safe, find_entry_phdr))
 		return (errors(ERR_THROW, "find_entry"));
-	if (!iterate_shdr(safe, find_entry_shdr))
+	if (!foreach_shdr(safe, find_entry_shdr))
 		return (errors(ERR_THROW, "find_entry"));
 
 	if (!original_entry->safe_shdr || !original_entry->safe_phdr)
