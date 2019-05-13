@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 14:56:28 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/13 16:22:15 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 16:41:57 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,10 @@ bool		adjust_references(size_t shift_amount, size_t end_of_text)
 	adjust_phdr_table_offset(elf_hdr, shift_amount, end_of_text);
 	adjust_shdr_table_offset(elf_hdr, shift_amount, end_of_text);
 
-	foreach_phdr(clone_safe, shift_phdr_position);
-	foreach_shdr(clone_safe, shift_shdr_position);
+	if (!foreach_phdr(clone_safe, shift_phdr_position))
+		return errors(ERR_THROW, "adjust_references");
+	if (!foreach_shdr(clone_safe, shift_shdr_position))
+		return errors(ERR_THROW, "adjust_references");
 
 	return true;
 }
