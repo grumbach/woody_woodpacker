@@ -6,7 +6,7 @@
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/05/11 06:53:38 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/05/14 16:25:21 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -15,12 +15,6 @@
 %define STDOUT			0x1
 %define PROT_RWX		0x7
 %define CALL_INSTR_SIZE		0x5
-
-%macro rev_sub 2
-	xchg	%2, %1
-	sub 	%2, %1
-	xchg	%2, %1
-%endmacro
 
 section .text
 	global begin_payload
@@ -54,9 +48,17 @@ mark_below:
 	mov rax, rdx               ; get begin_payload addr
 	sub rax, CALL_INSTR_SIZE
 
-	rev_sub r8, rax            ; r8 = rax - r8
-	rev_sub r10, rax           ; r10 = rax - r10
-	rev_sub r11, rax           ; r11 = rax - r11
+	push r15                   ; backup r15
+	mov r15, rax
+	xchg r15, r8
+	sub r8, r15                ; r8 = rax - r8
+	mov r15, rax
+	xchg r15, r10
+	sub r10, r15               ; r10 = rax - r10
+	mov r15, rax
+	xchg r15, r11
+	sub r11, r15               ; r11 = rax - r11
+	pop r15                    ; restore r15
 
 	push rax                   ; save begin_payload [rsp + 40]
 	push r8                    ; save ptld addr     [rsp + 32]
@@ -105,7 +107,8 @@ mark_below:
 ;------------------------------; return to text
 	mov r11, [rsp + 8]         ; get entry addr
 	add rsp, 48                ; restore stack as it was
-	jmp r11
+	push r11
+	ret
 
 ;void
 ;	decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size)
