@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_adjust_references.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 14:56:28 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/13 18:27:54 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/14 19:35:28 by jfortin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static void	adjust_shdr_table_offset(Elf64_Ehdr *safe_elf_hdr, \
 bool		adjust_references(size_t shift_amount, const struct entry *original_entry)
 {
 	closure.shift_amount  = shift_amount;
-	closure.end_of_text   = original_entry->section_end_offset;
+	closure.end_of_text   = original_entry->end_of_last_section;
 	closure.entry_sh_addr = endian_8(original_entry->safe_shdr->sh_addr);
 	closure.entry_p_vaddr = endian_8(original_entry->safe_phdr->p_vaddr);
 	closure.entry_p_paddr = endian_8(original_entry->safe_phdr->p_paddr);

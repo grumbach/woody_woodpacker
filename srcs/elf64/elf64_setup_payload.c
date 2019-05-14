@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_setup_payload.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 16:25:47 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/14 19:37:17 by jfortin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static bool	init_constants(struct payload_constants *constants, \
 	memcpy(constants->key, SECRET_SIGNATURE, SECRET_LEN);
 	generate_key((char *)constants->key + SECRET_LEN, 16 - SECRET_LEN);
 
-	constants->relative_pt_load_address = original_entry->section_end_offset - endian_8(original_entry->safe_phdr->p_offset); // TODO check with v_addresses instead of offsets
+	constants->relative_pt_load_address = original_entry->end_of_last_section - endian_8(original_entry->safe_phdr->p_offset); // TODO check with v_addresses instead of offsets
 	constants->pt_load_size             = endian_8(original_entry->safe_phdr->p_memsz);
 	constants->relative_text_address    = endian_8(original_entry->safe_shdr->sh_size);
 	constants->relative_entry_address   = constants->relative_text_address - original_entry->offset_in_section;
@@ -91,7 +91,7 @@ bool		setup_payload(const struct entry *original_entry)
 
 	const size_t	payload_size = end_payload - begin_payload;
 	const size_t	text_size    = constants.relative_text_address;
-	const size_t	payload_off  = original_entry->section_end_offset;
+	const size_t	payload_off  = original_entry->end_of_last_section;
 	const size_t	text_off     = payload_off - constants.relative_text_address;
 
 	void	*payload_location    = clone_safe(payload_off, payload_size);
