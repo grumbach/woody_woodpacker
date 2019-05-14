@@ -6,7 +6,7 @@
 /*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 23:43:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 19:38:02 by jfortin          ###   ########.fr       */
+/*   Updated: 2019/05/14 19:26:47 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ bool		find_entry(struct entry *original_entry, f_safe_accessor safe)
 
 	const Elf64_Addr sh_addr  = endian_8(original_entry->safe_shdr->sh_addr);
 
+	original_entry->end_of_last_section = sh_offset + sh_size;
 	original_entry->offset_in_section = e_entry - sh_addr;
 
 	return true;
