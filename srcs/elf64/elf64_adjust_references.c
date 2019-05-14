@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_adjust_references.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 14:56:28 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 18:42:14 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/14 20:30:29 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@ static struct
 {
 	size_t	shift_amount;
 	size_t	end_of_last_sect;
-	size_t	entry_sh_addr;
-	size_t	entry_p_vaddr;
-	size_t	entry_p_paddr;
 }		closure;
 
 static bool	shift_phdr_position(f_safe_accessor safe, const size_t offset)
@@ -79,9 +76,6 @@ bool		adjust_references(size_t shift_amount, const struct entry *original_entry)
 {
 	closure.shift_amount     = shift_amount;
 	closure.end_of_last_sect = original_entry->end_of_last_section;
-	closure.entry_sh_addr    = endian_8(original_entry->safe_shdr->sh_addr);
-	closure.entry_p_vaddr    = endian_8(original_entry->safe_phdr->p_vaddr);
-	closure.entry_p_paddr    = endian_8(original_entry->safe_phdr->p_paddr);
 
 	Elf64_Ehdr	*elf_hdr = clone_safe(0, sizeof(Elf64_Ehdr));
 	if (elf_hdr == NULL) return errors(ERR_CORRUPT, "wildly unreasonable");

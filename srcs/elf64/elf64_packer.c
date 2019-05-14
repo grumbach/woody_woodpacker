@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_packer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 19:11:57 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/14 21:06:40 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,12 @@ static bool	adjust_sizes(size_t shift_amount)
 
 	Elf64_Xword	p_filesz = endian_8(clone_entry.safe_phdr->p_filesz);
 	Elf64_Xword	p_memsz  = endian_8(clone_entry.safe_phdr->p_memsz);
-	Elf64_Xword	sh_size  = endian_8(clone_entry.safe_shdr->sh_size);
 
 	p_filesz += shift_amount;
 	p_memsz  += shift_amount;
-	sh_size  += shift_amount;
 
 	clone_entry.safe_phdr->p_filesz = endian_8(p_filesz);
 	clone_entry.safe_phdr->p_memsz  = endian_8(p_memsz);
-	clone_entry.safe_shdr->sh_size  = endian_8(sh_size);
 
 	return true;
 }
@@ -57,7 +54,7 @@ static bool	adjust_sizes(size_t shift_amount)
 bool		elf64_packer(size_t original_file_size)
 {
 	const size_t	payload_size = end_payload - begin_payload;
-	const size_t	shift_amount = ALIGN(payload_size, WOODY_ALIGNMENT); // TODO change this!
+	const size_t	shift_amount = ALIGN(payload_size, WOODY_ALIGNMENT);
 	struct entry	original_entry;
 
 	if (!find_entry(&original_entry, original_safe)
