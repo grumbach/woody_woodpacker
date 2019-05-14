@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_iterators.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 08:11:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/11 03:13:23 by jfortin          ###   ########.fr       */
+/*   Updated: 2019/05/14 09:52:43 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,11 @@ bool	foreach_phdr(f_safe_accessor safe, f_iter_callback callback)
 	const Elf64_Half	phentsize = endian_2(elf64_hdr->e_phentsize);
 	Elf64_Half		phnum = endian_2(elf64_hdr->e_phnum);
 	char			(*segments)[phnum][phentsize] = NULL;
+	const size_t		array_size = phentsize * phnum;
 
 	if (phentsize < sizeof(Elf64_Phdr)
-	|| (!(segments = safe(phoff, phentsize * phnum))))
+	|| (array_size / phentsize != phnum)
+	|| (!(segments = safe(phoff, array_size))))
 		return (errors(ERR_CORRUPT, "invalid segments table"));
 
 	while (phnum--)
@@ -48,9 +50,11 @@ bool	foreach_shdr(f_safe_accessor safe, f_iter_callback callback)
 	const Elf64_Half	shentsize = endian_2(elf64_hdr->e_shentsize);
 	Elf64_Half		shnum = endian_2(elf64_hdr->e_shnum);
 	char			(*sections)[shnum][shentsize] = NULL;
+	const size_t		array_size = shentsize * shnum;
 
 	if (shentsize < sizeof(Elf64_Shdr)
-	|| (!(sections = safe(shoff, shentsize * shnum))))
+	|| (array_size / shentsize != shnum)
+	|| (!(sections = safe(shoff, array_size))))
 		return (errors(ERR_CORRUPT, "invalid sections table"));
 
 	while (shnum--)
