@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_setup_payload.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
 /*   Updated: 2019/05/14 19:31:21 by agrumbac         ###   ########.fr       */

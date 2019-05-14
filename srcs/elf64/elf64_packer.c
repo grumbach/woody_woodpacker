@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_packer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
 /*   Updated: 2019/05/14 19:11:57 by agrumbac         ###   ########.fr       */

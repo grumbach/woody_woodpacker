@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_private.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
 /*   Updated: 2019/05/14 18:11:39 by agrumbac         ###   ########.fr       */

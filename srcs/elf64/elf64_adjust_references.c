@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_adjust_references.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 14:56:28 by agrumbac          #+#    #+#             */
 /*   Updated: 2019/05/14 18:42:14 by agrumbac         ###   ########.fr       */
