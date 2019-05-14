@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 16:25:47 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/14 19:31:21 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,14 @@
 **                      V   |  ...   |          ||
 **    offset_in_section -   |>>>>>>>>| entry    ||- relative_entry_address
 **                          |  ...   |          ||^
-**                          |  ...   |          |||
 **                          |--------|          |||
-**    section_end_offset -> |@@@@@@@@| payload  |||
+**                          |  ...   |          |||
+**                          |  ...   |          |||
+**                          |  ...   |          |||
+**   end_of_last_section -> |@@@@@@@@| payload  |||
 **                          |@      @| |
 **                          |@      @| V
 **                          |@@@@@@@@| payload_size
-**                          |  ...   |
 **                          |========|
 **                          |  ...   |
 **                          .        .
@@ -68,30 +69,32 @@ static void	generate_key(char *buffer, size_t len)
 		buffer[i] = rand();
 }
 
-static bool	init_constants(struct payload_constants *constants, \
+static void	init_constants(struct payload_constants *constants, \
 			const struct entry *original_entry)
 {
 	memcpy(constants->key, SECRET_SIGNATURE, SECRET_LEN);
 	generate_key((char *)constants->key + SECRET_LEN, 16 - SECRET_LEN);
 
-	constants->relative_pt_load_address = original_entry->section_end_offset - endian_8(original_entry->safe_phdr->p_offset); // TODO check with v_addresses instead of offsets
-	constants->pt_load_size             = endian_8(original_entry->safe_phdr->p_memsz);
-	constants->relative_text_address    = endian_8(original_entry->safe_shdr->sh_size);
-	constants->relative_entry_address   = constants->relative_text_address - original_entry->offset_in_section;
+	const Elf64_Off		p_offset = endian_8(original_entry->safe_phdr->p_offset);
+	const Elf64_Xword	p_memsz = endian_8(original_entry->safe_phdr->p_memsz);
+	const size_t		end_of_last_section = original_entry->end_of_last_section;
+	const Elf64_Off		sh_offset = endian_8(original_entry->safe_shdr->sh_offset);
 
-	return true;
+	constants->relative_pt_load_address = end_of_last_section - p_offset;
+	constants->pt_load_size             = p_memsz;
+	constants->relative_text_address    = end_of_last_section - sh_offset;
+	constants->relative_entry_address   = constants->relative_text_address - original_entry->offset_in_section;
 }
 
 bool		setup_payload(const struct entry *original_entry)
 {
 	struct payload_constants	constants;
 
-	if (init_constants(&constants, original_entry) == false)
-		return errors(ERR_THROW, "setup_payload");
+	init_constants(&constants, original_entry);
 
 	const size_t	payload_size = end_payload - begin_payload;
 	const size_t	text_size    = constants.relative_text_address;
-	const size_t	payload_off  = original_entry->section_end_offset;
+	const size_t	payload_off  = original_entry->end_of_last_section;
 	const size_t	text_off     = payload_off - constants.relative_text_address;
 
 	void	*payload_location    = clone_safe(payload_off, payload_size);
