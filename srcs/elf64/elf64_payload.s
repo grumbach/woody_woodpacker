@@ -6,7 +6,7 @@
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/05/14 16:25:21 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/05/15 15:45:03 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -23,27 +23,32 @@ section .text
 begin_payload:
 ;------------------------------; Store variables
 	call mark_below
-	db "128 bit key here", "rel ptld", "ptldsize", "rel text", "relentry"
+	db "128 bit key here", "rel ptld", "ptldsize", "rel text", "relentry", "textsize"
 ;------------------------------; Get variables address
-	; | 0    | *(16)       | *24         | *(32)       | *(40)        |
-	; | rdx  | r8          | r9          | r10         | r11          |
-	; | key  | rel ptld    | ptld size   | rel text    | rel entry    |
-	; | key  | (ptld addr) | (ptld size) | (text addr) | (entry addr) |
+	; | 0    | *(16)       | *24         | *(32)       | *(40)        | *48         |
+	; | rdx  | r8          | r9          | r10         | r11          | r14         |
+	; | key  | rel ptld    | ptld size   | rel text    | rel entry    | text size   |
+	; | key  | (ptld addr) | (ptld size) | (text addr) | (entry addr) | (text size) |
 mark_below:
 ; remove sizeof("call mark_below")
 	pop rdx
+	push r14                   ; backup r14
+
 	mov r8, rdx
 	mov r9, rdx
 	mov r10, rdx
 	mov r11, rdx
+	mov r14, rdx
 	add r8, 16                 ; align vars to correct addresses
 	add r9, 24
 	add r10, 32
 	add r11, 40
+	add r14, 48
 	mov r8, [r8]               ; dereference vars
 	mov r9, [r9]
 	mov r10, [r10]
 	mov r11, [r11]
+	mov r14, [r14]
 
 	mov rax, rdx               ; get begin_payload addr
 	sub rax, CALL_INSTR_SIZE
@@ -95,8 +100,7 @@ mark_below:
 	mov rdx, [rsp]             ; get key
 	mov r10, [rsp + 16]        ; get text_addr
 
-	mov rax, [rsp + 40]        ; get begin_payload
-	sub rax, r10               ; text_size = text_addr - begin_payload
+	mov rax, r14               ; get text_size
 
 	;decrypt(32, text_addr, key, text_size);
 	mov rdi, 32
@@ -107,6 +111,7 @@ mark_below:
 ;------------------------------; return to text
 	mov r11, [rsp + 8]         ; get entry addr
 	add rsp, 48                ; restore stack as it was
+	pop r14                    ; restore r14
 	push r11
 	ret
 

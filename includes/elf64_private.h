@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_private.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 18:11:39 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/15 14:01:52 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <linux/elf.h>
 # include "elf64.h"
 
-# define WOODY_ALIGNMENT	32
+# define WOODY_ALIGNMENT	4096
 # define ALIGN(x, n)		(((x) + (n)) & ~((n) - 1))
 
 /*

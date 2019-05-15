@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_setup_payload.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 19:31:21 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/15 15:45:21 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ struct payload_constants
 	uint64_t	pt_load_size;
 	uint64_t	relative_text_address;
 	uint64_t	relative_entry_address;
+	uint64_t	text_size;
 }__attribute__((packed));
 
 static void	generate_key(char *buffer, size_t len)
@@ -75,15 +76,17 @@ static void	init_constants(struct payload_constants *constants, \
 	memcpy(constants->key, SECRET_SIGNATURE, SECRET_LEN);
 	generate_key((char *)constants->key + SECRET_LEN, 16 - SECRET_LEN);
 
-	const Elf64_Off		p_offset = endian_8(original_entry->safe_phdr->p_offset);
-	const Elf64_Xword	p_memsz = endian_8(original_entry->safe_phdr->p_memsz);
 	const size_t		end_of_last_section = original_entry->end_of_last_section;
+	const Elf64_Off		p_offset  = endian_8(original_entry->safe_phdr->p_offset);
+	const Elf64_Xword	p_memsz   = endian_8(original_entry->safe_phdr->p_memsz);
 	const Elf64_Off		sh_offset = endian_8(original_entry->safe_shdr->sh_offset);
+	const size_t		sh_size   = endian_8(original_entry->safe_shdr->sh_size);
 
 	constants->relative_pt_load_address = end_of_last_section - p_offset;
 	constants->pt_load_size             = p_memsz;
 	constants->relative_text_address    = end_of_last_section - sh_offset;
 	constants->relative_entry_address   = constants->relative_text_address - original_entry->offset_in_section;
+	constants->text_size                = sh_size;
 }
 
 bool		setup_payload(const struct entry *original_entry)
@@ -93,7 +96,7 @@ bool		setup_payload(const struct entry *original_entry)
 	init_constants(&constants, original_entry);
 
 	const size_t	payload_size = end_payload - begin_payload;
-	const size_t	text_size    = constants.relative_text_address;
+	const size_t	text_size    = endian_8(original_entry->safe_shdr->sh_size);
 	const size_t	payload_off  = original_entry->end_of_last_section;
 	const size_t	text_off     = payload_off - constants.relative_text_address;
 
