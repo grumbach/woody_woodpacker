@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/15 18:28:44 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/15 19:48:50 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static bool	adjust_sizes(size_t shift_amount)
 bool		elf64_packer(size_t original_file_size)
 {
 	const size_t	payload_size = end_payload - begin_payload;
-	const size_t	shift_amount = 0;//ALIGN(payload_size, WOODY_ALIGNMENT);
+	const size_t	shift_amount = 0;//ALIGN(payload_size, WOODY_ALIGNMENT); //TODO
 	struct entry	original_entry;
 
 	if (!find_entry(&original_entry, original_safe)
@@ -64,8 +64,6 @@ bool		elf64_packer(size_t original_file_size)
 	|| !setup_payload(&original_entry)
 	|| !change_entry(&original_entry))
 		return errors(ERR_THROW, "elf64_packer");
-
-	elf64_viewer(clone_safe);
 
 	return true;
 }

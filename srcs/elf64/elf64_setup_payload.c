@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 00:10:33 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/15 19:06:47 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/15 19:29:57 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ bool		setup_payload(const struct entry *original_entry)
 	if (!payload_location || !constants_location || !text_location)
 		return (errors(ERR_CORRUPT, "wildly unreasonable"));
 
-	// encrypt(32, text_location, constants.key, text_size);
+	encrypt(32, text_location, constants.key, text_size);
 	memcpy(payload_location, begin_payload, payload_size);
 	memcpy(constants_location, &constants, sizeof(constants));
 
