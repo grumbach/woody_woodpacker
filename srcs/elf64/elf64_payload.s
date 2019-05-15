@@ -6,7 +6,7 @@
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/05/15 15:45:03 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/05/15 19:24:54 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -30,9 +30,11 @@ begin_payload:
 	; | key  | rel ptld    | ptld size   | rel text    | rel entry    | text size   |
 	; | key  | (ptld addr) | (ptld size) | (text addr) | (entry addr) | (text size) |
 mark_below:
-; remove sizeof("call mark_below")
-	pop rdx
+	pop rax
+	push rdx                   ; backup rdx
 	push r14                   ; backup r14
+
+	mov rdx, rax
 
 	mov r8, rdx
 	mov r9, rdx
@@ -97,21 +99,22 @@ mark_below:
 	syscall
 
 ;------------------------------; decrypt text
-	mov rdx, [rsp]             ; get key
-	mov r10, [rsp + 16]        ; get text_addr
-
-	mov rax, r14               ; get text_size
-
-	;decrypt(32, text_addr, key, text_size);
-	mov rdi, 32
-	mov rsi, r10
-	mov rdx, rdx
-	mov rcx, rax
-	call decrypt
+	; mov rdx, [rsp]             ; get key
+	; mov r10, [rsp + 16]        ; get text_addr
+	;
+	; mov rax, r14               ; get text_size
+	;
+	; ;decrypt(32, text_addr, key, text_size);
+	; mov rdi, 32
+	; mov rsi, r10
+	; mov rdx, rdx
+	; mov rcx, rax
+	; call decrypt
 ;------------------------------; return to text
 	mov r11, [rsp + 8]         ; get entry addr
 	add rsp, 48                ; restore stack as it was
 	pop r14                    ; restore r14
+	pop rdx                    ; restore rdx
 	push r11
 	ret
 
