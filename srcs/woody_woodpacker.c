@@ -1,19 +1,84 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   woody_woodpacker.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:04:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2018/11/04 20:39:39 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 15:15:22 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
+#include "elf64.h"             /* for [FMT_ELF64] entry */
 
-int		main(__unused int ac, __unused char **av)
+static const struct format	implemented_formats[FMT_SIZE] =
 {
-	puts("Hello from woody_woodpacker!");
-	return (0);
+	[FMT_ELF64] = {elf64_identifier, elf64_packer}
+	// [FMT_ELF32] = {elf32_identifier, elf32_packer},
+	// [FMT_MACHO64] = {macho64_identifier, macho64_packer},
+	// [FMT_MACHO32] = {macho32_identifier, macho32_packer},
+	// [FMT_PE64] = {pe64_identifier, pe64_packer},
+	// [FMT_PE32] = {pe32_identifier, pe32_packer},
+};
+
+/*
+**
+*/
+
+static size_t		detect_format(void)
+{
+	for (size_t i = 0; i < FMT_SIZE; i++)
+	{
+		if (implemented_formats[i].format_identifier())
+			return (i);
+	}
+	return (FMT_SIZE);
+}
+
+int			main(int ac, char **av)
+{
+	int		ret = EXIT_SUCCESS;
+	size_t		filesize;
+	enum e_format	format;
+
+	if (ac != 2)
+	{
+		errors(ERR_USAGE, "\nusage: %s <executable>\n", av[0]);
+		goto exit_failure;
+	}
+
+	filesize = read_file(av[1]);
+	if (filesize == 0)
+		goto exit_failure;
+
+	format = detect_format();
+	if (format == FMT_SIZE)
+	{
+		errors(ERR_USAGE, "%s: %s is not a valid input file\n", av[0], av[1]);
+		goto exit_failure;
+	}
+
+	if (!alloc_clone(filesize))
+		goto exit_failure;
+
+	if (!implemented_formats[format].packer(filesize))
+	{
+		errors(ERR_CORRUPT, "%s: file corruption detected in %s, aborting.\n", av[0], av[1]);
+		goto exit_failure;
+	}
+
+	if (!write_clone_file())
+		goto exit_failure;
+
+	printf("\e[32mSuccessfully packed\e[33m %s \e[32min \e[33m" OUTPUT_FILENAME "\e[32m!\e[0m\n", av[1]);
+
+exit:
+	free_clone();
+	free_file();
+	return (ret);
+exit_failure:
+	ret = EXIT_FAILURE;
+	goto exit;
 }
