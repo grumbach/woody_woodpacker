@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 00:35:02 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 15:14:58 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 ** ------------------------------- Constants -----------------------------------
 */
 
-# define OUTPUT_FILENAME	"woody"
+# define OUTPUT_FILENAME	"packed_file"
 
 enum
 {
@@ -68,7 +68,7 @@ enum	e_format
 */
 
 typedef bool			(*f_identifier)(void);
-typedef bool			(*f_packer)(void *clone, size_t original_filesize)__nonull;
+typedef bool			(*f_packer)(size_t original_file_size);
 
 struct				format
 {
@@ -91,9 +91,14 @@ void		decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size);
 ** safe file accessing
 */
 
-void		*safe(const size_t offset, const size_t size);
+void		*original_safe(const size_t offset, const size_t size);
 size_t		read_file(const char *filename);
 bool		free_file(void);
+
+void		*clone_safe(const size_t offset, const size_t size);
+bool		alloc_clone(const size_t original_filesize);
+bool		write_clone_file(void);
+void		free_clone(void);
 
 /*
 ** endian management

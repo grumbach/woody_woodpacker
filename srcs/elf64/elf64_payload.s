@@ -1,20 +1,20 @@
 ; **************************************************************************** ;
 ;                                                                              ;
 ;                                                         :::      ::::::::    ;
-;    payload.s                                          :+:      :+:    :+:    ;
+;    elf64_payload.s                                    :+:      :+:    :+:    ;
 ;                                                     +:+ +:+         +:+      ;
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/03/19 14:31:27 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/05/15 19:29:38 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
 %define SYSCALL_WRITE		0x1
 %define SYSCALL_MPROTECT	0xa
-%define STDOUT				0x1
-%define PROT_RWX			0x7
-%define PAGE_SIZE_ALIGN		0xffffffffffffff00
+%define STDOUT			0x1
+%define PROT_RWX		0x7
+%define CALL_INSTR_SIZE		0x5
 
 section .text
 	global begin_payload
@@ -23,27 +23,56 @@ section .text
 begin_payload:
 ;------------------------------; Store variables
 	call mark_below
-	db "128 bit key here", "text len", "entry..."
+	db "128 bit key here", "rel ptld", "ptldsize", "rel text", "relentry", "textsize"
 ;------------------------------; Get variables address
-	; | 0    | *16      | *24        |           |
-	; | rdx  | r9       | r8         | r10       |
-	; | key  | text len | entry addr | text addr |
+	; | 0    | *(16)       | *24         | *(32)       | *(40)        | *48         |
+	; | rdx  | r8          | r9          | r10         | r11          | r14         |
+	; | key  | rel ptld    | ptld size   | rel text    | rel entry    | text size   |
+	; | key  | (ptld addr) | (ptld size) | (text addr) | (entry addr) | (text size) |
 mark_below:
-	pop rdx
-	mov r9, rdx
-	add r9, 16
-	mov r9, [r9]
-	mov r10, rdx
-	sub r10, r9
-	mov r8, rdx
-	add r8, 24
-	mov r8, [r8]
-	add r8, rdx
+	pop rax
+	push rdx                   ; backup rdx
+	push r14                   ; backup r14
 
-	push r8                    ; save entry addr
-	push r10                   ; save text addr
-	push rdx                   ; save key
-	push r9                    ; save text len
+	mov rdx, rax
+
+	mov r8, rdx
+	mov r9, rdx
+	mov r10, rdx
+	mov r11, rdx
+	mov r14, rdx
+	add r8, 16                 ; align vars to correct addresses
+	add r9, 24
+	add r10, 32
+	add r11, 40
+	add r14, 48
+	mov r8, [r8]               ; dereference vars
+	mov r9, [r9]
+	mov r10, [r10]
+	mov r11, [r11]
+	mov r14, [r14]
+
+	mov rax, rdx               ; get begin_payload addr
+	sub rax, CALL_INSTR_SIZE
+
+	push r15                   ; backup r15
+	mov r15, rax
+	xchg r15, r8
+	sub r8, r15                ; r8 = rax - r8
+	mov r15, rax
+	xchg r15, r10
+	sub r10, r15               ; r10 = rax - r10
+	mov r15, rax
+	xchg r15, r11
+	sub r11, r15               ; r11 = rax - r11
+	pop r15                    ; restore r15
+
+	push rax                   ; save begin_payload [rsp + 40]
+	push r8                    ; save ptld addr     [rsp + 32]
+	push r9                    ; save ptld size     [rsp + 24]
+	push r10                   ; save text addr     [rsp + 16]
+	push r11                   ; save entry addr    [rsp + 8]
+	push rdx                   ; save key           [rsp]
 ;------------------------------; Show-off
 	mov rax, 0x00000a2e2e2e2e59
 	push rax
@@ -58,34 +87,36 @@ mark_below:
 	syscall
 
 	add rsp, 16
-;------------------------------; make text writable
-	mov rdx, [rsp + 8]         ; get key
-	mov r9, [rsp]              ; get text len
-	mov r10, [rsp + 16]        ; get text addr
+;------------------------------; make ptld writable
+	mov r8, [rsp + 32]         ; get ptld addr
+	mov r9, [rsp + 24]         ; get ptld len
 
-	and r10, PAGE_SIZE_ALIGN   ; align pagesize
-
-	;mprotect(text_addr, text_len, PROT_READ | PROT_WRITE | PROT_EXEC);
-	mov rdi, r10
+	;mprotect(ptld_addr, ptld_size, PROT_READ | PROT_WRITE | PROT_EXEC);
+	mov rdi, r8
 	mov rsi, r9
 	mov rdx, PROT_RWX
 	mov rax, SYSCALL_MPROTECT
 	syscall
 
 ;------------------------------; decrypt text
-	mov rdx, [rsp + 8]         ; get key
-	mov r9, [rsp]              ; get text len
-	mov r10, [rsp + 16]        ; get text addr
+	mov rdx, [rsp]             ; get key
+	mov r10, [rsp + 16]        ; get text_addr
 
-	;decrypt(32, text, key, text_len);
+	mov rax, r14               ; get text_size
+
+	;decrypt(32, text_addr, key, text_size);
 	mov rdi, 32
 	mov rsi, r10
 	mov rdx, rdx
-	mov rcx, r9
+	mov rcx, rax
 	call decrypt
 ;------------------------------; return to text
-	mov r8, [rsp + 24]         ; get entry
-	jmp r8
+	mov r11, [rsp + 8]         ; get entry addr
+	add rsp, 48                ; restore stack as it was
+	pop r14                    ; restore r14
+	pop rdx                    ; restore rdx
+	push r11
+	ret
 
 ;void
 ;	decrypt(uint num_rounds, char *data, uint32_t const key[4], size_t size)

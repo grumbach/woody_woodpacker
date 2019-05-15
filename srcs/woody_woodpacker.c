@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:04:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 03:13:34 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/13 15:15:22 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,10 @@ static size_t		detect_format(void)
 	return (FMT_SIZE);
 }
 
-__nonull
-static bool		write_clone_file(void *clone, size_t clone_size)
-{
-	int		fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY, S_IRWXU);
-
-	if (fd == -1)
-		return errors(ERR_SYS, "failed creating file " OUTPUT_FILENAME);
-
-	if (write(fd, clone, clone_size) == -1)
-	{
-		close(fd);
-		return errors(ERR_SYS, "failed writing to " OUTPUT_FILENAME);
-	}
-	close(fd);
-	return (true);
-}
-
 int			main(int ac, char **av)
 {
-	int		ret		= EXIT_SUCCESS;
-	void		*clone		= NULL;
+	int		ret = EXIT_SUCCESS;
 	size_t		filesize;
-	size_t		clone_size;
 	enum e_format	format;
 
 	if (ac != 2)
@@ -79,27 +60,22 @@ int			main(int ac, char **av)
 		goto exit_failure;
 	}
 
-	clone_size = filesize + 4096; /* filesize + payload size + align */
-	clone = malloc(clone_size);
-	if (clone == NULL)
-	{
-		errors(ERR_SYS, "while allocating clone");
+	if (!alloc_clone(filesize))
 		goto exit_failure;
-	}
 
-	if (implemented_formats[format].packer(clone, clone_size) == false)
+	if (!implemented_formats[format].packer(filesize))
 	{
 		errors(ERR_CORRUPT, "%s: file corruption detected in %s, aborting.\n", av[0], av[1]);
 		goto exit_failure;
 	}
 
-	if (write_clone_file(clone, clone_size) == false)
+	if (!write_clone_file())
 		goto exit_failure;
 
 	printf("\e[32mSuccessfully packed\e[33m %s \e[32min \e[33m" OUTPUT_FILENAME "\e[32m!\e[0m\n", av[1]);
 
 exit:
-	free(clone);
+	free_clone();
 	free_file();
 	return (ret);
 exit_failure:
