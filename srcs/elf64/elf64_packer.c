@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/16 17:48:11 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 18:16:51 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,24 @@ static bool	define_shift_amount(const struct entry *original_entry, size_t *shif
 	const size_t	payload_size    = end_payload - begin_payload;
 	const size_t	segment_padding = segment_end - original_entry->end_of_last_section;
 
-	if (payload_size > segment_padding)
+	if (payload_size < segment_padding)
 	{
-		*shift_amount = ALIGN(payload_size, WOODY_ALIGNMENT);
-		if (!resize_clone(*shift_amount))
-			return errors(ERR_THROW, "define_shift_amount");
-	} else {
 		*shift_amount = 0;
+		return true;
 	}
+
+	const size_t	p_memsz = endian_8(original_entry->safe_phdr->p_memsz);
+	const size_t	p_align = endian_8(original_entry->safe_phdr->p_align);
+
+	*shift_amount = ALIGN(payload_size, WOODY_ALIGNMENT);
+	if (!resize_clone(*shift_amount))
+		return errors(ERR_THROW, "define_shift_amount");
+
+	const size_t	end_padding = (p_memsz % p_align) + *shift_amount;
+
+	if (end_padding > p_align)
+		return errors(ERR_USAGE, "insufficient memory padding "
+		"in file (overflow of %lu bytes)", (end_padding - p_align));
 
 	return true;
 }
