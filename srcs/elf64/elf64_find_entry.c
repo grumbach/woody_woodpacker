@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 23:43:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 21:06:29 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 18:33:44 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ static bool	find_entry_shdr(f_safe_accessor safe, const size_t offset)
 
 	if (end_of_sect <= end_of_ptload
 	&& (end_of_sect > stored_entry->end_of_last_section))
+	{
+		stored_entry->safe_last_section_shdr = elf64_sect_hdr;
 		stored_entry->end_of_last_section = end_of_sect;
+	}
 
 	return true;
 }
@@ -67,11 +70,13 @@ bool		find_entry(struct entry *original_entry, f_safe_accessor safe)
 
 	if (!foreach_phdr(safe, find_entry_phdr))
 		return (errors(ERR_THROW, "find_entry"));
+	if (!original_entry->safe_phdr)
+		return (errors(ERR_CORRUPT, "missing entry segment"));
+
 	if (!foreach_shdr(safe, find_entry_shdr))
 		return (errors(ERR_THROW, "find_entry"));
-
-	if (!original_entry->safe_shdr || !original_entry->safe_phdr)
-		return (errors(ERR_CORRUPT, "missing entry section or segment"));
+	if (!original_entry->safe_shdr)
+		return (errors(ERR_CORRUPT, "missing entry section"));
 
 	const Elf64_Addr sh_addr  = endian_8(original_entry->safe_shdr->sh_addr);
 

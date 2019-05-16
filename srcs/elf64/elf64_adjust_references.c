@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 14:56:28 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/14 20:30:29 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 17:47:07 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,9 @@ static void	adjust_shdr_table_offset(Elf64_Ehdr *safe_elf_hdr, \
 
 bool		adjust_references(size_t shift_amount, const struct entry *original_entry)
 {
+	if (shift_amount == 0)
+		return true;
+
 	closure.shift_amount     = shift_amount;
 	closure.end_of_last_sect = original_entry->end_of_last_section;
 
