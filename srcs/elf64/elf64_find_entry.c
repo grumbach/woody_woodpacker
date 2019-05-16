@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 23:43:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/16 17:14:04 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 18:33:44 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ static bool	find_entry_shdr(f_safe_accessor safe, const size_t offset)
 
 	if (end_of_sect <= end_of_ptload
 	&& (end_of_sect > stored_entry->end_of_last_section))
+	{
+		stored_entry->safe_last_section_shdr = elf64_sect_hdr;
 		stored_entry->end_of_last_section = end_of_sect;
+	}
 
 	return true;
 }

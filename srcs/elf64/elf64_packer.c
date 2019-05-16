@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:42:04 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/16 18:16:51 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 18:48:43 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,20 @@ static bool	change_entry(const struct entry *original_entry)
 static bool	adjust_sizes(size_t shift_amount)
 {
 	struct entry	clone_entry;
-
-	if (shift_amount == 0)
-		return true;
+	const size_t	payload_size = end_payload - begin_payload;
 
 	if (!find_entry(&clone_entry, clone_safe))
 		return errors(ERR_THROW, "adjust_sizes");
 
+	size_t		sh_size  = endian_8(clone_entry.safe_last_section_shdr->sh_size);
 	Elf64_Xword	p_filesz = endian_8(clone_entry.safe_phdr->p_filesz);
 	Elf64_Xword	p_memsz  = endian_8(clone_entry.safe_phdr->p_memsz);
 
+	sh_size  += payload_size;
 	p_filesz += shift_amount;
 	p_memsz  += shift_amount;
 
+	clone_entry.safe_last_section_shdr->sh_size = endian_8(sh_size);
 	clone_entry.safe_phdr->p_filesz = endian_8(p_filesz);
 	clone_entry.safe_phdr->p_memsz  = endian_8(p_memsz);
 

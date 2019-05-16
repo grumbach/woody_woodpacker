@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 15:43:25 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/15 14:01:52 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 18:32:46 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ struct				entry
 {
 	struct elf64_phdr	*safe_phdr;
 	struct elf64_shdr	*safe_shdr;
+	struct elf64_shdr	*safe_last_section_shdr;
 	size_t			end_of_last_section;
 	size_t			offset_in_section;
 };
