@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/12 03:15:48 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/15 19:49:55 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/05/16 17:43:03 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,22 @@ void		*clone_safe(const size_t offset, const size_t size)
 
 bool		alloc_clone(const size_t original_filesize)
 {
-	/* filesize + payload size + alignment */
-	safe_pointer.filesize = original_filesize; // TODO dynamic size depending on shift_size
+	safe_pointer.filesize = original_filesize;
 	safe_pointer.ptr = malloc(safe_pointer.filesize);
 
 	if (safe_pointer.ptr == NULL)
 		return (errors(ERR_SYS, "while allocating clone"));
+
+	return (true);
+}
+
+bool		resize_clone(const size_t added_size)
+{
+	safe_pointer.filesize += added_size;
+	safe_pointer.ptr = realloc(safe_pointer.ptr, safe_pointer.filesize);
+
+	if (safe_pointer.ptr == NULL)
+		return (errors(ERR_SYS, "while reallocating clone"));
 
 	return (true);
 }
