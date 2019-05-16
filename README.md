@@ -72,13 +72,6 @@ typedef struct     elf64_shdr
 }                  Elf64_Shdr;
 ```
 
-### - Fields for a packed `.text` section
-
-| Fields    | Values                                  | Why                  |
-|-----------|-----------------------------------------|----------------------|
-|`sh_type`  | `SHT_PROGBITS`                          | Program bits         |
-|`sh_flags` | `SHF_WRITE + SHF_ALLOC + SHF_EXECINSTR` | mmaped `-rwx`        |
-
 ## Elf64 Program Header
 
 ```c
@@ -94,10 +87,3 @@ typedef struct     elf64_phdr
     Elf64_Xword    p_align;       // Segment alignment, file & memory
 }                  Elf64_Phdr;
 ```
-
-### - Fields in the corresponding segment for `.text` section
-
-| Fields    | Values               | Why                                |
-|-----------|----------------------|------------------------------------|
-|`p_type`   | `PT_LOAD`            | Segment should be loaded in memory |
-|`p_flags`  | `PF_R + PF_W + PF_X` | Readable Writable Executable       |
