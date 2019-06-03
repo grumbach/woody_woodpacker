@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   elf64_viewer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfortin <jfortin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 22:36:00 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/11 08:05:07 by jfortin          ###   ########.fr       */
+/*   Updated: 2019/06/03 21:37:31 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "elf64_private.h"
 
-bool	print_ehdr(f_safe_accessor safe)
+static bool	print_ehdr(f_safe_accessor safe)
 {
 	Elf64_Ehdr *ehdr = safe(0, sizeof(*ehdr));
 
@@ -50,7 +50,7 @@ bool	print_ehdr(f_safe_accessor safe)
 	return true;
 }
 
-bool	print_phdr(f_safe_accessor safe, size_t offset)
+static bool	print_phdr(f_safe_accessor safe, size_t offset)
 {
 	Elf64_Phdr *phdr = safe(offset, sizeof(*phdr));
 
@@ -77,7 +77,7 @@ bool	print_phdr(f_safe_accessor safe, size_t offset)
 	return true;
 }
 
-bool	print_shdr(f_safe_accessor safe, size_t offset)
+static bool	print_shdr(f_safe_accessor safe, size_t offset)
 {
 	Elf64_Shdr *shdr = safe(offset, sizeof(*shdr));
 
@@ -108,7 +108,7 @@ bool	print_shdr(f_safe_accessor safe, size_t offset)
 	return true;
 }
 
-bool	elf64_viewer(f_safe_accessor safe)
+bool		elf64_viewer(f_safe_accessor safe)
 {
 	if (!print_ehdr(safe)
 	|| !foreach_phdr(safe, print_phdr)

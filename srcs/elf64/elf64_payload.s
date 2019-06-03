@@ -6,7 +6,7 @@
 ;    By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
 ;    Created: 2019/02/11 14:08:33 by agrumbac          #+#    #+#              ;
-;    Updated: 2019/05/15 19:29:38 by agrumbac         ###   ########.fr        ;
+;    Updated: 2019/06/03 21:29:48 by agrumbac         ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -23,12 +23,13 @@ section .text
 begin_payload:
 ;------------------------------; Store variables
 	call mark_below
-	db "128 bit key here", "rel ptld", "ptldsize", "rel text", "relentry", "textsize"
+	db "128 bit key here", "rel ptld", "ptldsize", "rel text"
+	db "relentry", "textsize"
 ;------------------------------; Get variables address
-	; | 0    | *(16)       | *24         | *(32)       | *(40)        | *48         |
-	; | rdx  | r8          | r9          | r10         | r11          | r14         |
-	; | key  | rel ptld    | ptld size   | rel text    | rel entry    | text size   |
-	; | key  | (ptld addr) | (ptld size) | (text addr) | (entry addr) | (text size) |
+; | 0    | *(16)       | *24         | *(32)       | *(40)        | *48        |
+; | rdx  | r8          | r9          | r10         | r11          | r14        |
+; | key  | rel ptld    | ptld size   | rel text    | rel entry    | text size  |
+; | key  | (ptld addr) | (ptld size) | (text addr) | (entry addr) | (text size)|
 mark_below:
 	pop rax
 	push rdx                   ; backup rdx

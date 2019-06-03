@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/12 03:15:48 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/16 17:43:03 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/06/03 21:36:42 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static struct
 }		safe_pointer = {NULL, 0};
 
 /*
-** safe()
-** returns a safe pointer
+** clone_safe()
+** returns a safe pointer in the clone
 ** returns NULL if requested memory is out of range
 */
 
@@ -32,6 +32,7 @@ void		*clone_safe(const size_t offset, const size_t size)
 	return (safe_pointer.ptr + offset);
 }
 
+__warn_unused_result
 bool		alloc_clone(const size_t original_filesize)
 {
 	safe_pointer.filesize = original_filesize;
@@ -43,6 +44,7 @@ bool		alloc_clone(const size_t original_filesize)
 	return (true);
 }
 
+__warn_unused_result
 bool		resize_clone(const size_t added_size)
 {
 	safe_pointer.filesize += added_size;
@@ -59,7 +61,7 @@ void		free_clone(void)
 	free(safe_pointer.ptr);
 }
 
-__nonull
+__warn_unused_result
 bool		write_clone_file(void)
 {
 	int	fd = open(OUTPUT_FILENAME, O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);

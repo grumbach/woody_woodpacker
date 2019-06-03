@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 16:40:47 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/10 06:02:38 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/06/03 21:32:52 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static struct
 }			safe_pointer = {NULL, 0};
 
 /*
-** safe()
-** returns a safe pointer
+** original_safe()
+** returns a safe read-only pointer to the original file
 ** returns NULL if requested memory is out of range
 */
 
@@ -32,6 +32,7 @@ void			*original_safe(const size_t offset, const size_t size)
 	return (safe_pointer.ptr + offset);
 }
 
+__warn_unused_result
 size_t			read_file(const char *filename)
 {
 	void		*ptr;

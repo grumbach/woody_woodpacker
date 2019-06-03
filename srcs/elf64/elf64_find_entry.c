@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/10 23:43:29 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/16 18:33:44 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/06/03 21:24:46 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ static bool	find_entry_shdr(f_safe_accessor safe, const size_t offset)
 	if (sh_addr <= e_entry && e_entry < sh_addr + sh_size)
 		stored_entry->safe_shdr = elf64_sect_hdr;
 
-	const Elf64_Off		p_offset = endian_8(stored_entry->safe_phdr->p_offset);
+	const Elf64_Off		p_offset  = endian_8(stored_entry->safe_phdr->p_offset);
 	const Elf64_Off		sh_offset = endian_8(elf64_sect_hdr->sh_offset);
-	const Elf64_Xword	p_filesz = endian_8(stored_entry->safe_phdr->p_filesz);
+	const Elf64_Xword	p_filesz  = endian_8(stored_entry->safe_phdr->p_filesz);
 
 	const size_t		end_of_ptload = p_offset + p_filesz;
 	const size_t		end_of_sect   = sh_offset + sh_size;

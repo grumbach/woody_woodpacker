@@ -6,7 +6,7 @@
 /*   By: agrumbac <agrumbac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 18:05:58 by agrumbac          #+#    #+#             */
-/*   Updated: 2019/05/16 17:19:42 by agrumbac         ###   ########.fr       */
+/*   Updated: 2019/06/03 21:42:37 by agrumbac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ enum
 	ERR_THROW,              // throw error form above function
 	ERR_USAGE,              // bad usage
 	ERR_CORRUPT,            // corrupt file
-	ERR_SIZE,               // number of ERRs above
+	ERR_SIZE,               // number of ERRs above, always last
 };
 
 /*
