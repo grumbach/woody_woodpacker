@@ -83,7 +83,7 @@ bool		find_entry(struct entry *original_entry, f_safe_accessor safe)
 	original_entry->offset_in_section = e_entry - sh_addr;
 
 	if (original_entry->end_of_last_section == 0)
-		errors(ERR_CORRUPT, "no section in entry segment");
+		return (errors(ERR_CORRUPT, "no section in entry segment"));
 
 	return true;
 }
